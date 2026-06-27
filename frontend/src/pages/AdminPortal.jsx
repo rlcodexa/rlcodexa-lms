@@ -10,7 +10,10 @@ import {
   BookOpen, 
   Database,
   Cpu,
-  CheckCircle
+  CheckCircle,
+  BarChart3,
+  Award,
+  TrendingUp
 } from 'lucide-react';
 
 const AdminPortal = () => {
@@ -788,6 +791,128 @@ const AdminPortal = () => {
     </div>
   );
 
+  const renderResults = () => {
+    const registeredStudents = students.filter(s => s.registered);
+    const scoredStudents = registeredStudents
+      .map(s => ({
+        ...s,
+        totalScore: (s.quizScore || 0) + (s.codingScore || 0)
+      }))
+      .sort((a, b) => b.totalScore - a.totalScore);
+
+    const avgQuiz = registeredStudents.length > 0
+      ? Math.round(registeredStudents.reduce((sum, s) => sum + (s.quizScore || 0), 0) / registeredStudents.length)
+      : 0;
+    const avgCoding = registeredStudents.length > 0
+      ? Math.round(registeredStudents.reduce((sum, s) => sum + (s.codingScore || 0), 0) / registeredStudents.length)
+      : 0;
+    const completedBoth = registeredStudents.filter(s => s.completedQuiz && s.completedCoding).length;
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        {/* Summary Stats */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
+          <div className="glass-panel" style={{ padding: '18px' }}>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Registered Students</div>
+            <div style={{ fontSize: '24px', fontWeight: '800', color: 'var(--primary-blue)' }}>{registeredStudents.length}</div>
+          </div>
+          <div className="glass-panel" style={{ padding: '18px' }}>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Completed Both Assessments</div>
+            <div style={{ fontSize: '24px', fontWeight: '800', color: '#10b981' }}>{completedBoth}</div>
+          </div>
+          <div className="glass-panel" style={{ padding: '18px' }}>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Avg Quiz Score</div>
+            <div style={{ fontSize: '24px', fontWeight: '800', color: 'var(--secondary-cyan)' }}>{avgQuiz}%</div>
+          </div>
+          <div className="glass-panel" style={{ padding: '18px' }}>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Avg Coding Score</div>
+            <div style={{ fontSize: '24px', fontWeight: '800', color: '#f59e0b' }}>{avgCoding}%</div>
+          </div>
+        </div>
+
+        {/* Student Results Table */}
+        <div className="glass-panel" style={{ padding: '24px', overflowX: 'auto' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+            <h3 style={{ fontSize: '16px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <BarChart3 size={16} color="var(--primary-blue)" /> Student Assessment Results
+            </h3>
+          </div>
+          <table className="leaderboard-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Roll Number</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Quiz Score</th>
+                <th>Coding Score</th>
+                <th>Total</th>
+                <th>Assessments</th>
+              </tr>
+            </thead>
+            <tbody>
+              {scoredStudents.length === 0 ? (
+                <tr><td colSpan="8" style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '30px' }}>No registered students yet.</td></tr>
+              ) : (
+                scoredStudents.map((s, idx) => (
+                  <tr key={s.id}>
+                    <td style={{ fontWeight: 'bold', color: idx < 3 ? '#f59e0b' : 'var(--text-muted)' }}>#{idx + 1}</td>
+                    <td style={{ fontFamily: 'var(--font-code)', fontSize: '13px' }}>{s.id}</td>
+                    <td style={{ fontWeight: '500' }}>{s.name}</td>
+                    <td style={{ color: 'var(--text-muted)', fontSize: '13px' }}>{s.department}</td>
+                    <td>{s.completedQuiz ? <span style={{ color: '#10b981' }}>{s.quizScore}%</span> : <span style={{ color: 'var(--text-muted)' }}>—</span>}</td>
+                    <td>{s.completedCoding ? <span style={{ color: 'var(--secondary-cyan)' }}>{s.codingScore}%</span> : <span style={{ color: 'var(--text-muted)' }}>—</span>}</td>
+                    <td style={{ fontWeight: 'bold', color: '#fff' }}>{s.totalScore}/200</td>
+                    <td>
+                      <div style={{ display: 'flex', gap: '4px' }}>
+                        {s.completedQuiz && <span className="cyber-badge" style={{ fontSize: '10px', background: 'rgba(16,185,129,0.1)', color: '#10b981' }}>Quiz</span>}
+                        {s.completedCoding && <span className="cyber-badge" style={{ fontSize: '10px', background: 'rgba(6,182,212,0.1)', color: 'var(--secondary-cyan)' }}>Coding</span>}
+                        {!s.completedQuiz && !s.completedCoding && <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>None</span>}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Module Completion Stats */}
+        <div className="glass-panel" style={{ padding: '24px' }}>
+          <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <TrendingUp size={16} color="var(--secondary-cyan)" /> Assessment Completion Overview
+          </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '15px' }}>
+            <div>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px' }}>Quiz Completion</div>
+              <div className="custom-progress-bar" style={{ height: '10px' }}>
+                <div className="custom-progress-fill" style={{
+                  width: `${registeredStudents.length > 0 ? (registeredStudents.filter(s => s.completedQuiz).length / registeredStudents.length) * 100 : 0}%`,
+                  background: 'linear-gradient(90deg, var(--primary-blue), var(--secondary-cyan))'
+                }}></div>
+              </div>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>
+                {registeredStudents.filter(s => s.completedQuiz).length} / {registeredStudents.length} students
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px' }}>Coding Completion</div>
+              <div className="custom-progress-bar" style={{ height: '10px' }}>
+                <div className="custom-progress-fill" style={{
+                  width: `${registeredStudents.length > 0 ? (registeredStudents.filter(s => s.completedCoding).length / registeredStudents.length) * 100 : 0}%`,
+                  background: 'linear-gradient(90deg, var(--secondary-cyan), #10b981)'
+                }}></div>
+              </div>
+              <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>
+                {registeredStudents.filter(s => s.completedCoding).length} / {registeredStudents.length} students
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const renderLogs = () => (
     <div className="glass-panel" style={{ padding: '24px' }}>
       <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '15px', display: 'flex', gap: '8px', alignItems: 'center' }}>
@@ -1129,6 +1254,9 @@ const AdminPortal = () => {
         <button onClick={() => setActiveTab('addcoding')} className="btn-cyber-outline" style={{ padding: '8px 16px', fontSize: '13px', background: activeTab === 'addcoding' ? 'rgba(0, 191, 255, 0.1)' : 'transparent' }}>
           Add Coding Task
         </button>
+        <button onClick={() => setActiveTab('results')} className="btn-cyber-outline" style={{ padding: '8px 16px', fontSize: '13px', background: activeTab === 'results' ? 'rgba(0, 191, 255, 0.1)' : 'transparent' }}>
+          Assessment Results
+        </button>
         <button onClick={() => setActiveTab('syslogs')} className="btn-cyber-outline" style={{ padding: '8px 16px', fontSize: '13px', background: activeTab === 'syslogs' ? 'rgba(0, 191, 255, 0.1)' : 'transparent' }}>
           Realtime Syslogs
         </button>
@@ -1227,6 +1355,7 @@ const AdminPortal = () => {
       {activeTab === 'assessments' && renderAssessments()}
       {activeTab === 'addquiz' && renderAddQuiz()}
       {activeTab === 'addcoding' && renderAddCoding()}
+      {activeTab === 'results' && renderResults()}
       {activeTab === 'syslogs' && renderLogs()}
     </div>
   );

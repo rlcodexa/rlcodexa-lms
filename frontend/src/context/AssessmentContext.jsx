@@ -116,6 +116,10 @@ export const AssessmentProvider = ({ children }) => {
   const [sections, setSections] = useState([]);
   const [semesters, setSemesters] = useState([]);
   const [modules, setModules] = useState([]);
+  const [completedModules, setCompletedModules] = useState(() => {
+    const saved = localStorage.getItem('codegate_v2_completed_modules');
+    return saved ? JSON.parse(saved) : {};
+  });
 
   // Sync offline states to local storage
   useEffect(() => {
@@ -139,6 +143,12 @@ export const AssessmentProvider = ({ children }) => {
       localStorage.setItem('codegate_v2_activity_logs', JSON.stringify(activityLogs));
     }
   }, [activityLogs, isOnline]);
+
+  useEffect(() => {
+    if (!isOnline) {
+      localStorage.setItem('codegate_v2_completed_modules', JSON.stringify(completedModules));
+    }
+  }, [completedModules, isOnline]);
 
   // Check backend server status
   const checkStatus = async () => {
@@ -589,6 +599,75 @@ export const AssessmentProvider = ({ children }) => {
     setSecurityOverlay(null);
   };
 
+  // Save assessment results (Aptitude/CodingMCQ) and track completion per module
+  const saveAssessmentResult = async (type, moduleId, score) => {
+    if (!currentUser || currentUser.role !== 'student') return;
+
+    const scoreKey = type === 'aptitude' ? 'quizScore' : 'codingScore';
+    const completedKey = type === 'aptitude' ? 'completedQuiz' : 'completedCoding';
+
+    if (isOnline) {
+      try {
+        const res = await fetch(`${API_BASE_URL}/student/submissions/quiz`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            studentId: currentUser.id,
+            assessmentId: type === 'aptitude' ? 'ASM_APT' : 'ASM_CODING',
+            score: score
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          setCurrentUser(prev => ({
+            ...prev,
+            points: data.points || prev.points,
+            level: data.level || prev.level,
+            quizScore: type === 'aptitude' ? (prev.quizScore || 0) + score : prev.quizScore,
+            codingScore: type === 'coding_mcq' ? (prev.codingScore || 0) + score : prev.codingScore
+          }));
+          await fetchBackendData();
+        }
+      } catch (error) {
+        console.error("Assessment submission error:", error);
+      }
+    } else {
+      // Offline fallback
+      const addedPoints = Math.round(score * 0.5);
+      const updatedStudents = students.map(s => {
+        if (s.id === currentUser.id) {
+          const newScore = type === 'aptitude'
+            ? (s.quizScore || 0) + score
+            : (s.codingScore || 0) + score;
+          const finalPoints = s.points + addedPoints;
+          return {
+            ...s,
+            [scoreKey]: newScore,
+            [completedKey]: true,
+            points: finalPoints,
+            level: calculateLevel(finalPoints)
+          };
+        }
+        return s;
+      });
+
+      setStudents(updatedStudents);
+      const updatedUser = updatedStudents.find(s => s.id === currentUser.id);
+      setCurrentUser({ ...updatedUser, role: 'student' });
+
+      // Track module completion
+      const modKey = `${type}_${moduleId}`;
+      const updatedModules = { ...completedModules, [modKey]: { completed: true, score, date: new Date().toISOString() } };
+      setCompletedModules(updatedModules);
+
+      addActivityLog(currentUser.name, "student", `${type.toUpperCase()}_SUBMIT`, `${type === 'aptitude' ? 'Aptitude' : 'Coding MCQ'} completed. Module: ${moduleId}, Score: ${score}%`);
+    }
+  };
+
+  const isModuleCompleted = (type, moduleId) => {
+    return !!completedModules[`${type}_${moduleId}`];
+  };
+
   const resetAllData = async () => {
     if (isOnline) {
       try {
@@ -607,7 +686,9 @@ export const AssessmentProvider = ({ children }) => {
       localStorage.removeItem('codegate_v2_students');
       localStorage.removeItem('codegate_v2_user');
       localStorage.removeItem('codegate_v2_activity_logs');
+      localStorage.removeItem('codegate_v2_completed_modules');
 
+      setCompletedModules({});
       setStudents(INITIAL_STUDENT_WHITELIST.map(s => {
         const idNum = parseInt(s.id.split('-').pop());
         const isRegistered = idNum > 1 && idNum <= 10;
@@ -785,7 +866,10 @@ export const AssessmentProvider = ({ children }) => {
       deleteStudent,
       deleteStaff,
       deleteCollege,
-      refreshData: fetchBackendData
+      refreshData: fetchBackendData,
+      completedModules,
+      saveAssessmentResult,
+      isModuleCompleted
     }}>
       {children}
     </AssessmentContext.Provider>
