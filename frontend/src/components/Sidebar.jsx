@@ -27,7 +27,7 @@ const Sidebar = ({ currentPage, setCurrentPage }) => {
       case 'student':
         return [
           { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-          { id: 'quiz', label: 'Daily Quiz', icon: HelpCircle, disabled: currentUser.completedQuiz, badge: currentUser.completedQuiz ? 'Done' : 'Active' },
+          { id: 'quizhub', label: 'Quiz', icon: HelpCircle },
           { id: 'coding', label: 'Code Sandbox', icon: Code2, disabled: currentUser.completedCoding, badge: currentUser.completedCoding ? 'Done' : 'Active' },
           { id: 'evaluation', label: 'My Analytics', icon: Award },
           { id: 'certificate', label: 'Certificate', icon: FileCheck, disabled: !certActive, badge: certActive ? 'Ready' : 'Locked' }

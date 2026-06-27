@@ -12,6 +12,11 @@ import Certificate from './pages/Certificate';
 import StaffPortal from './pages/StaffPortal';
 import HodPortal from './pages/HodPortal';
 import AdminPortal from './pages/AdminPortal';
+import QuizHub from './pages/QuizHub';
+import Aptitude from './pages/Aptitude';
+import CodingMCQ from './pages/CodingMCQ';
+import DatabaseSQL from './pages/DatabaseSQL';
+import ComputerFundamentals from './pages/ComputerFundamentals';
 
 const MainAppContent = () => {
   const { currentUser } = useContext(AssessmentContext);
@@ -40,6 +45,16 @@ const MainAppContent = () => {
       // Student Pages
       case 'dashboard':
         return <Dashboard setCurrentPage={setCurrentPage} />;
+      case 'quizhub':
+        return <QuizHub setCurrentPage={setCurrentPage} />;
+      case 'aptitude':
+        return <Aptitude setCurrentPage={setCurrentPage} />;
+      case 'coding-mcq':
+        return <CodingMCQ setCurrentPage={setCurrentPage} />;
+      case 'database-sql':
+        return <DatabaseSQL setCurrentPage={setCurrentPage} />;
+      case 'computer-fundamentals':
+        return <ComputerFundamentals setCurrentPage={setCurrentPage} />;
       case 'quiz':
         return <Quiz setCurrentPage={setCurrentPage} />;
       case 'coding':

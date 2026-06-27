@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { AssessmentContext } from '../context/AssessmentContext';
-import { Users, Plus, FileText, ClipboardList, Code2, CheckCircle2 } from 'lucide-react';
+import { AssessmentContext, API_BASE_URL } from '../context/AssessmentContext';
+import BulkUpload from '../components/BulkUpload';
+import { Users, Plus, FileText, ClipboardList, Code2, CheckCircle2, Upload } from 'lucide-react';
 
 const StaffPortal = () => {
   const { students, departments, isOnline } = useContext(AssessmentContext);
@@ -39,7 +40,7 @@ const StaffPortal = () => {
   const fetchAssessments = async () => {
     if (isOnline) {
       try {
-        const res = await fetch('http://localhost:5000/api/trainer/assessments');
+        const res = await fetch(`${API_BASE_URL}/trainer/assessments`);
         const data = await res.json();
         setAssessments(data.filter(a => a.type === 'Quiz'));
         if (data.length > 0) setSelectedAssessmentId(data[0].assessmentId);
@@ -50,7 +51,7 @@ const StaffPortal = () => {
   const fetchSubmissions = async () => {
     if (isOnline) {
       try {
-        const res = await fetch('http://localhost:5000/api/trainer/submissions');
+        const res = await fetch(`${API_BASE_URL}/trainer/submissions`);
         const data = await res.json();
         setSubmissions(data);
       } catch (e) { console.error(e); }
@@ -77,7 +78,7 @@ const StaffPortal = () => {
 
     if (isOnline) {
       try {
-        const res = await fetch('http://localhost:5000/api/trainer/questions/quiz', {
+        const res = await fetch(`${API_BASE_URL}/trainer/questions/quiz`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -368,12 +369,20 @@ const StaffPortal = () => {
         <button onClick={() => setActiveTab('evals')} className="btn-cyber-outline" style={{ padding: '8px 16px', fontSize: '13px', background: activeTab === 'evals' ? 'rgba(0, 191, 255, 0.1)' : 'transparent' }}>
           Evaluate Submissions
         </button>
+        <button onClick={() => setActiveTab('bulk')} className="btn-cyber-outline" style={{ padding: '8px 16px', fontSize: '13px', background: activeTab === 'bulk' ? 'rgba(0, 191, 255, 0.1)' : 'transparent' }}>
+          Bulk Upload
+        </button>
       </div>
 
       {activeTab === 'directory' && renderDirectory()}
       {activeTab === 'addquiz' && renderAddQuiz()}
       {activeTab === 'addcoding' && renderAddCoding()}
       {activeTab === 'evals' && renderEvaluations()}
+      {activeTab === 'bulk' && (
+        <div className="glass-panel" style={{ padding: '24px' }}>
+          <BulkUpload />
+        </div>
+      )}
     </div>
   );
 };

@@ -3,7 +3,7 @@ import { AssessmentContext } from '../context/AssessmentContext';
 import { Award, ShieldAlert, CheckCircle, Clock, Zap, Target, BookOpen, Star } from 'lucide-react';
 
 const Evaluation = () => {
-  const { currentStudent, students } = useContext(AssessmentContext);
+  const { currentUser: currentStudent, students } = useContext(AssessmentContext);
 
   if (!currentStudent) return null;
 
