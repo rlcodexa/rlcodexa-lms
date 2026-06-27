@@ -175,7 +175,8 @@ const PYTHON_MODULES = [
             constraints: ['-10^9 <= n <= 10^9'],
             templates: {
               python: `def even_or_odd(n):\n    return 'Even' if n % 2 == 0 else 'Odd'\n`,
-              javascript: `function evenOrOdd(n) {\n    return n % 2 === 0 ? 'Even' : 'Odd';\n}\n`
+              javascript: `function evenOrOdd(n) {\n    return n % 2 === 0 ? 'Even' : 'Odd';\n}\n`,
+              java: `public static String evenOrOdd(int n) {\n    return n % 2 == 0 ? "Even" : "Odd";\n}\n`
             },
             verifyKeyword: (code) => code.includes('%')
           },
@@ -188,7 +189,8 @@ const PYTHON_MODULES = [
             constraints: ['-10^9 <= n <= 10^9'],
             templates: {
               python: `def check_sign(n):\n    if n > 0: return 'Positive'\n    elif n < 0: return 'Negative'\n    return 'Zero'\n`,
-              javascript: `function checkSign(n) {\n    if (n > 0) return 'Positive';\n    else if (n < 0) return 'Negative';\n    return 'Zero';\n}\n`
+              javascript: `function checkSign(n) {\n    if (n > 0) return 'Positive';\n    else if (n < 0) return 'Negative';\n    return 'Zero';\n}\n`,
+              java: `public static String checkSign(int n) {\n    if (n > 0) return "Positive";\n    else if (n < 0) return "Negative";\n    return "Zero";\n}\n`
             },
             verifyKeyword: (code) => code.includes('if') && (code.includes('>') || code.includes('<'))
           },
@@ -201,9 +203,108 @@ const PYTHON_MODULES = [
             constraints: ['Input is a single lowercase letter.'],
             templates: {
               python: `def is_vowel(ch):\n    return 'Vowel' if ch in 'aeiou' else 'Consonant'\n`,
-              javascript: `function isVowel(ch) {\n    return 'aeiou'.includes(ch) ? 'Vowel' : 'Consonant';\n}\n`
+              javascript: `function isVowel(ch) {\n    return 'aeiou'.includes(ch) ? 'Vowel' : 'Consonant';\n}\n`,
+              java: `public static String isVowel(char ch) {\n    String vowels = "aeiou";\n    return vowels.indexOf(ch) != -1 ? "Vowel" : "Consonant";\n}\n`
             },
             verifyKeyword: (code) => code.includes('aeiou') || code.includes('vowel') || code.includes('Vowel')
+          },
+          {
+            id: 'cond-easy-4',
+            title: 'Leap Year',
+            desc: 'Write a function that returns true if a given year is a leap year. Leap years are divisible by 400, or divisible by 4 but not by 100.',
+            inputExample: 'year = 2024',
+            outputExample: 'true',
+            constraints: ['1000 <= year <= 9999'],
+            templates: {
+              python: `def is_leap_year(year):\n    return (year % 400 == 0) or (year % 4 == 0 and year % 100 != 0)\n`,
+              javascript: `function isLeapYear(year) {\n    return (year % 400 === 0) || (year % 4 === 0 && year % 100 !== 0);\n}\n`,
+              java: `public static boolean isLeapYear(int year) {\n    return (year % 400 == 0) || (year % 4 == 0 && year % 100 != 0);\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('%') && (code.includes('400') || code.includes('100'))
+          },
+          {
+            id: 'cond-easy-5',
+            title: 'Max of Two',
+            desc: 'Write a function that takes two numbers and returns the larger one.',
+            inputExample: 'a = 10, b = 7',
+            outputExample: '10',
+            constraints: ['-10^9 <= a, b <= 10^9'],
+            templates: {
+              python: `def max_of_two(a, b):\n    return a if a > b else b\n`,
+              javascript: `function maxOfTwo(a, b) {\n    return a > b ? a : b;\n}\n`,
+              java: `public static int maxOfTwo(int a, int b) {\n    return a > b ? a : b;\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('>') || code.includes('max')
+          },
+          {
+            id: 'cond-easy-6',
+            title: 'Divisible by 3 and 5',
+            desc: 'Write a function that returns true if a number is divisible by both 3 and 5.',
+            inputExample: 'n = 15',
+            outputExample: 'true',
+            constraints: ['-10^9 <= n <= 10^9'],
+            templates: {
+              python: `def is_divisible_by_3_and_5(n):\n    return n % 3 == 0 and n % 5 == 0\n`,
+              javascript: `function isDivisibleBy3And5(n) {\n    return n % 3 === 0 && n % 5 === 0;\n}\n`,
+              java: `public static boolean isDivisibleBy3And5(int n) {\n    return n % 3 == 0 && n % 5 == 0;\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('%') && code.includes('3') && code.includes('5')
+          },
+          {
+            id: 'cond-easy-7',
+            title: 'Character is Digit',
+            desc: 'Write a function that returns true if a given character is a digit (0-9).',
+            inputExample: 'ch = "7"',
+            outputExample: 'true',
+            constraints: ['Input is a single character.'],
+            templates: {
+              python: `def is_digit(ch):\n    return ch.isdigit()\n`,
+              javascript: `function isDigit(ch) {\n    return ch >= '0' && ch <= '9';\n}\n`,
+              java: `public static boolean isDigit(char ch) {\n    return ch >= '0' && ch <= '9';\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('digit') || (code.includes('>=') && code.includes('0') && code.includes('9'))
+          },
+          {
+            id: 'cond-easy-8',
+            title: 'Absolute Value',
+            desc: 'Write a function that returns the absolute value of a number without using built-in abs().',
+            inputExample: 'n = -10',
+            outputExample: '10',
+            constraints: ['-10^9 <= n <= 10^9'],
+            templates: {
+              python: `def absolute(n):\n    return -n if n < 0 else n\n`,
+              javascript: `function absolute(n) {\n    return n < 0 ? -n : n;\n}\n`,
+              java: `public static int absolute(int n) {\n    return n < 0 ? -n : n;\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('<') || (code.includes('-') && code.includes('n'))
+          },
+          {
+            id: 'cond-easy-9',
+            title: 'Smallest of Three',
+            desc: 'Write a function that takes three numbers and returns the smallest one.',
+            inputExample: 'a = 8, b = 3, c = 5',
+            outputExample: '3',
+            constraints: ['-10^9 <= a, b, c <= 10^9'],
+            templates: {
+              python: `def smallest_of_three(a, b, c):\n    return min(a, b, c)\n`,
+              javascript: `function smallestOfThree(a, b, c) {\n    return Math.min(a, b, c);\n}\n`,
+              java: `public static int smallestOfThree(int a, int b, int c) {\n    return Math.min(a, Math.min(b, c));\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('min')
+          },
+          {
+            id: 'cond-easy-10',
+            title: 'Pass or Fail',
+            desc: 'Write a function that returns "Pass" if marks >= 40, otherwise "Fail".',
+            inputExample: 'marks = 35',
+            outputExample: '"Fail"',
+            constraints: ['0 <= marks <= 100'],
+            templates: {
+              python: `def pass_or_fail(marks):\n    return 'Pass' if marks >= 40 else 'Fail'\n`,
+              javascript: `function passOrFail(marks) {\n    return marks >= 40 ? 'Pass' : 'Fail';\n}\n`,
+              java: `public static String passOrFail(int marks) {\n    return marks >= 40 ? "Pass" : "Fail";\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('40') || (code.includes('if') && code.includes('>='))
           }
         ]
       },
@@ -221,7 +322,8 @@ const PYTHON_MODULES = [
             constraints: ['1 <= n <= 20'],
             templates: {
               python: `def right_triangle(n):\n    lines = []\n    for i in range(1, n + 1):\n        lines.append('*' * i)\n    return '\\n'.join(lines)\n`,
-              javascript: `function rightTriangle(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        lines.push('*'.repeat(i));\n    }\n    return lines.join('\\n');\n}\n`
+              javascript: `function rightTriangle(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        lines.push('*'.repeat(i));\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String rightTriangle(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        for (int j = 0; j < i; j++) sb.append('*');\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
             },
             verifyKeyword: (code) => code.includes('for') && code.includes('*')
           },
@@ -234,9 +336,122 @@ const PYTHON_MODULES = [
             constraints: ['1 <= n <= 15'],
             templates: {
               python: `def pyramid(n):\n    lines = []\n    for i in range(1, n + 1):\n        spaces = ' ' * (n - i)\n        stars = '*' * (2 * i - 1)\n        lines.append(spaces + stars)\n    return '\\n'.join(lines)\n`,
-              javascript: `function pyramid(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        const spaces = ' '.repeat(n - i);\n        const stars = '*'.repeat(2 * i - 1);\n        lines.push(spaces + stars);\n    }\n    return lines.join('\\n');\n}\n`
+              javascript: `function pyramid(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        const spaces = ' '.repeat(n - i);\n        const stars = '*'.repeat(2 * i - 1);\n        lines.push(spaces + stars);\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String pyramid(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        for (int s = 0; s < n - i; s++) sb.append(' ');\n        for (int j = 0; j < 2 * i - 1; j++) sb.append('*');\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
             },
             verifyKeyword: (code) => code.includes('for') && code.includes('*') && (code.includes('spaces') || code.includes(' '))
+          },
+          {
+            id: 'cond-pat-3',
+            title: 'Inverted Right Triangle',
+            desc: 'Write a function that prints an inverted right-angled triangle of stars with n rows. Return the pattern as a string with newlines.',
+            inputExample: 'n = 4',
+            outputExample: '****\\n***\\n**\\n*',
+            constraints: ['1 <= n <= 20'],
+            templates: {
+              python: `def inverted_right_triangle(n):\n    lines = []\n    for i in range(n, 0, -1):\n        lines.append('*' * i)\n    return '\\n'.join(lines)\n`,
+              javascript: `function invertedRightTriangle(n) {\n    const lines = [];\n    for (let i = n; i >= 1; i--) {\n        lines.push('*'.repeat(i));\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String invertedRightTriangle(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = n; i >= 1; i--) {\n        for (int j = 0; j < i; j++) sb.append('*');\n        if (i > 1) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('for') && code.includes('*') && (code.includes('i--') || code.includes('-1'))
+          },
+          {
+            id: 'cond-pat-4',
+            title: 'Inverted Pyramid',
+            desc: 'Write a function that prints an inverted centered pyramid of stars with n rows. Return the pattern as a string with newlines.',
+            inputExample: 'n = 3',
+            outputExample: '*****\\n ***\\n  *',
+            constraints: ['1 <= n <= 15'],
+            templates: {
+              python: `def inverted_pyramid(n):\n    lines = []\n    for i in range(n, 0, -1):\n        spaces = ' ' * (n - i)\n        stars = '*' * (2 * i - 1)\n        lines.append(spaces + stars)\n    return '\\n'.join(lines)\n`,
+              javascript: `function invertedPyramid(n) {\n    const lines = [];\n    for (let i = n; i >= 1; i--) {\n        const spaces = ' '.repeat(n - i);\n        const stars = '*'.repeat(2 * i - 1);\n        lines.push(spaces + stars);\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String invertedPyramid(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = n; i >= 1; i--) {\n        for (int s = 0; s < n - i; s++) sb.append(' ');\n        for (int j = 0; j < 2 * i - 1; j++) sb.append('*');\n        if (i > 1) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('for') && code.includes('*') && code.includes('spaces')
+          },
+          {
+            id: 'cond-pat-5',
+            title: 'Right Number Triangle',
+            desc: 'Write a function that prints a right triangle with row numbers. Row i contains numbers 1 to i. Return as string with newlines.',
+            inputExample: 'n = 4',
+            outputExample: '1\\n12\\n123\\n1234',
+            constraints: ['1 <= n <= 9'],
+            templates: {
+              python: `def number_triangle(n):\n    lines = []\n    for i in range(1, n + 1):\n        lines.append(''.join(str(j) for j in range(1, i + 1)))\n    return '\\n'.join(lines)\n`,
+              javascript: `function numberTriangle(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        let row = '';\n        for (let j = 1; j <= i; j++) row += j;\n        lines.push(row);\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String numberTriangle(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= i; j++) sb.append(j);\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('for') && code.includes('j')
+          },
+          {
+            id: 'cond-pat-6',
+            title: 'Mirrored Right Triangle',
+            desc: 'Write a function that prints a right-angled triangle right-aligned. Each row i has (n-i) spaces followed by i stars.',
+            inputExample: 'n = 4',
+            outputExample: '   *\\n  **\\n ***\\n****',
+            constraints: ['1 <= n <= 20'],
+            templates: {
+              python: `def mirrored_right_triangle(n):\n    lines = []\n    for i in range(1, n + 1):\n        spaces = ' ' * (n - i)\n        stars = '*' * i\n        lines.append(spaces + stars)\n    return '\\n'.join(lines)\n`,
+              javascript: `function mirroredRightTriangle(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        const spaces = ' '.repeat(n - i);\n        const stars = '*'.repeat(i);\n        lines.push(spaces + stars);\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String mirroredRightTriangle(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        for (int s = 0; s < n - i; s++) sb.append(' ');\n        for (int j = 0; j < i; j++) sb.append('*');\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('for') && code.includes('*') && (code.includes('spaces') || code.includes(' '))
+          },
+          {
+            id: 'cond-pat-7',
+            title: 'Hollow Right Triangle',
+            desc: 'Write a function that prints a hollow right-angled triangle. Only the border has stars; the interior is spaces.',
+            inputExample: 'n = 5',
+            outputExample: '*\\n**\\n* *\\n*  *\\n*****',
+            constraints: ['3 <= n <= 20'],
+            templates: {
+              python: `def hollow_right_triangle(n):\n    lines = []\n    for i in range(1, n + 1):\n        if i <= 2 or i == n:\n            lines.append('*' * i)\n        else:\n            lines.append('*' + ' ' * (i - 2) + '*')\n    return '\\n'.join(lines)\n`,
+              javascript: `function hollowRightTriangle(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        if (i <= 2 || i === n) {\n            lines.push('*'.repeat(i));\n        } else {\n            lines.push('*' + ' '.repeat(i - 2) + '*');\n        }\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String hollowRightTriangle(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        if (i <= 2 || i == n) {\n            for (int j = 0; j < i; j++) sb.append('*');\n        } else {\n            sb.append('*');\n            for (int j = 0; j < i - 2; j++) sb.append(' ');\n            sb.append('*');\n        }\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('for') && code.includes('*') && code.includes('hollow')
+          },
+          {
+            id: 'cond-pat-8',
+            title: 'Binary Triangle',
+            desc: 'Write a function that prints a binary triangle of 0s and 1s with n rows. Row i alternates starting with 1.',
+            inputExample: 'n = 4',
+            outputExample: '1\\n01\\n101\\n0101',
+            constraints: ['1 <= n <= 10'],
+            templates: {
+              python: `def binary_triangle(n):\n    lines = []\n    for i in range(1, n + 1):\n        row = ''\n        for j in range(i):\n            row += '1' if (i + j) % 2 == 1 else '0'\n        lines.append(row)\n    return '\\n'.join(lines)\n`,
+              javascript: `function binaryTriangle(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        let row = '';\n        for (let j = 0; j < i; j++) {\n            row += (i + j) % 2 === 1 ? '1' : '0';\n        }\n        lines.push(row);\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String binaryTriangle(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        for (int j = 0; j < i; j++) {\n            sb.append((i + j) % 2 == 1 ? '1' : '0');\n        }\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('binary') || (code.includes('1') && code.includes('0'))
+          },
+          {
+            id: 'cond-pat-9',
+            title: 'Increasing Number Triangle',
+            desc: 'Write a function that prints a triangle where each row contains the same number repeated. Row i has i copies of i.',
+            inputExample: 'n = 4',
+            outputExample: '1\\n22\\n333\\n4444',
+            constraints: ['1 <= n <= 9'],
+            templates: {
+              python: `def increasing_num_triangle(n):\n    lines = []\n    for i in range(1, n + 1):\n        lines.append(str(i) * i)\n    return '\\n'.join(lines)\n`,
+              javascript: `function increasingNumTriangle(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        lines.push(String(i).repeat(i));\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String increasingNumTriangle(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        for (int j = 0; j < i; j++) sb.append(i);\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('repeat') || (code.includes('for') && code.includes('i'))
+          },
+          {
+            id: 'cond-pat-10',
+            title: 'Decreasing Number Triangle',
+            desc: 'Write a function that prints a triangle where rows contain decreasing numbers. Row i has numbers n down to (n-i+1).',
+            inputExample: 'n = 4',
+            outputExample: '4\\n43\\n432\\n4321',
+            constraints: ['1 <= n <= 9'],
+            templates: {
+              python: `def decreasing_num_triangle(n):\n    lines = []\n    for i in range(1, n + 1):\n        row = ''.join(str(n - j) for j in range(i))\n        lines.append(row)\n    return '\\n'.join(lines)\n`,
+              javascript: `function decreasingNumTriangle(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        let row = '';\n        for (let j = 0; j < i; j++) row += n - j;\n        lines.push(row);\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String decreasingNumTriangle(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        for (int j = 0; j < i; j++) sb.append(n - j);\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('for') && (code.includes('n - j') || code.includes('n-j'))
           }
         ]
       },
@@ -254,7 +469,8 @@ const PYTHON_MODULES = [
             constraints: ['3 <= n <= 20'],
             templates: {
               python: `def hollow_square(n):\n    lines = []\n    for i in range(n):\n        if i == 0 or i == n - 1:\n            lines.append('*' * n)\n        else:\n            lines.append('*' + ' ' * (n - 2) + '*')\n    return '\\n'.join(lines)\n`,
-              javascript: `function hollowSquare(n) {\n    const lines = [];\n    for (let i = 0; i < n; i++) {\n        if (i === 0 || i === n - 1) {\n            lines.push('*'.repeat(n));\n        } else {\n            lines.push('*' + ' '.repeat(n - 2) + '*');\n        }\n    }\n    return lines.join('\\n');\n}\n`
+              javascript: `function hollowSquare(n) {\n    const lines = [];\n    for (let i = 0; i < n; i++) {\n        if (i === 0 || i === n - 1) {\n            lines.push('*'.repeat(n));\n        } else {\n            lines.push('*' + ' '.repeat(n - 2) + '*');\n        }\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String hollowSquare(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 0; i < n; i++) {\n        if (i == 0 || i == n - 1) {\n            for (int j = 0; j < n; j++) sb.append('*');\n        } else {\n            sb.append('*');\n            for (int j = 0; j < n - 2; j++) sb.append(' ');\n            sb.append('*');\n        }\n        if (i < n - 1) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
             },
             verifyKeyword: (code) => code.includes('for') && code.includes('*') && (code.includes('if') || code.includes('i ==='))
           },
@@ -267,9 +483,122 @@ const PYTHON_MODULES = [
             constraints: ['1 <= n <= 10'],
             templates: {
               python: `def diamond(n):\n    lines = []\n    for i in range(1, n + 1):\n        lines.append(' ' * (n - i) + '*' * (2 * i - 1))\n    for i in range(n - 1, 0, -1):\n        lines.append(' ' * (n - i) + '*' * (2 * i - 1))\n    return '\\n'.join(lines)\n`,
-              javascript: `function diamond(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        lines.push(' '.repeat(n - i) + '*'.repeat(2 * i - 1));\n    }\n    for (let i = n - 1; i >= 1; i--) {\n        lines.push(' '.repeat(n - i) + '*'.repeat(2 * i - 1));\n    }\n    return lines.join('\\n');\n}\n`
+              javascript: `function diamond(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        lines.push(' '.repeat(n - i) + '*'.repeat(2 * i - 1));\n    }\n    for (let i = n - 1; i >= 1; i--) {\n        lines.push(' '.repeat(n - i) + '*'.repeat(2 * i - 1));\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String diamond(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        for (int s = 0; s < n - i; s++) sb.append(' ');\n        for (int j = 0; j < 2 * i - 1; j++) sb.append('*');\n        sb.append('\\n');\n    }\n    for (int i = n - 1; i >= 1; i--) {\n        for (int s = 0; s < n - i; s++) sb.append(' ');\n        for (int j = 0; j < 2 * i - 1; j++) sb.append('*');\n        if (i > 1) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
             },
             verifyKeyword: (code) => code.includes('for') && code.includes('*') && (code.includes('i--') || code.includes('i - 1'))
+          },
+          {
+            id: 'cond-star-3',
+            title: 'Hollow Diamond',
+            desc: 'Write a function that prints a hollow diamond pattern of stars with n rows for the upper half. Only the border has stars.',
+            inputExample: 'n = 4',
+            outputExample: '   *\\n  * *\\n *   *\\n*     *\\n *   *\\n  * *\\n   *',
+            constraints: ['2 <= n <= 10'],
+            templates: {
+              python: `def hollow_diamond(n):\n    lines = []\n    for i in range(1, n + 1):\n        spaces = ' ' * (n - i)\n        if i == 1:\n            lines.append(spaces + '*')\n        else:\n            lines.append(spaces + '*' + ' ' * (2 * i - 3) + '*')\n    for i in range(n - 1, 0, -1):\n        spaces = ' ' * (n - i)\n        if i == 1:\n            lines.append(spaces + '*')\n        else:\n            lines.append(spaces + '*' + ' ' * (2 * i - 3) + '*')\n    return '\\n'.join(lines)\n`,
+              javascript: `function hollowDiamond(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        const spaces = ' '.repeat(n - i);\n        if (i === 1) lines.push(spaces + '*');\n        else lines.push(spaces + '*' + ' '.repeat(2 * i - 3) + '*');\n    }\n    for (let i = n - 1; i >= 1; i--) {\n        const spaces = ' '.repeat(n - i);\n        if (i === 1) lines.push(spaces + '*');\n        else lines.push(spaces + '*' + ' '.repeat(2 * i - 3) + '*');\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String hollowDiamond(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        for (int s = 0; s < n - i; s++) sb.append(' ');\n        sb.append('*');\n        if (i > 1) {\n            for (int j = 0; j < 2 * i - 3; j++) sb.append(' ');\n            sb.append('*');\n        }\n        sb.append('\\n');\n    }\n    for (int i = n - 1; i >= 1; i--) {\n        for (int s = 0; s < n - i; s++) sb.append(' ');\n        sb.append('*');\n        if (i > 1) {\n            for (int j = 0; j < 2 * i - 3; j++) sb.append(' ');\n            sb.append('*');\n        }\n        if (i > 1) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('for') && code.includes('*') && (code.includes('hollow') || code.includes('spaces'))
+          },
+          {
+            id: 'cond-star-4',
+            title: 'Plus Sign',
+            desc: 'Write a function that prints a plus sign (+) pattern of stars with side length n (odd). Center row and column are full of stars.',
+            inputExample: 'n = 5',
+            outputExample: '  *\\n  *\\n*****\\n  *\\n  *',
+            constraints: ['n is odd, 3 <= n <= 15'],
+            templates: {
+              python: `def plus_sign(n):\n    lines = []\n    mid = n // 2\n    for i in range(n):\n        if i == mid:\n            lines.append('*' * n)\n        else:\n            lines.append(' ' * mid + '*')\n    return '\\n'.join(lines)\n`,
+              javascript: `function plusSign(n) {\n    const lines = [];\n    const mid = Math.floor(n / 2);\n    for (let i = 0; i < n; i++) {\n        if (i === mid) lines.push('*'.repeat(n));\n        else lines.push(' '.repeat(mid) + '*');\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String plusSign(int n) {\n    StringBuilder sb = new StringBuilder();\n    int mid = n / 2;\n    for (int i = 0; i < n; i++) {\n        if (i == mid) {\n            for (int j = 0; j < n; j++) sb.append('*');\n        } else {\n            for (int j = 0; j < mid; j++) sb.append(' ');\n            sb.append('*');\n        }\n        if (i < n - 1) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('for') && code.includes('*') && code.includes('mid')
+          },
+          {
+            id: 'cond-star-5',
+            title: 'X Pattern',
+            desc: 'Write a function that prints an X pattern of stars with side length n (odd). Stars appear on both diagonals.',
+            inputExample: 'n = 5',
+            outputExample: '*   *\\n * *\\n  *\\n * *\\n*   *',
+            constraints: ['n is odd, 3 <= n <= 15'],
+            templates: {
+              python: `def x_pattern(n):\n    lines = []\n    for i in range(n):\n        row = ''\n        for j in range(n):\n            if i == j or i + j == n - 1:\n                row += '*'\n            else:\n                row += ' '\n        lines.append(row)\n    return '\\n'.join(lines)\n`,
+              javascript: `function xPattern(n) {\n    const lines = [];\n    for (let i = 0; i < n; i++) {\n        let row = '';\n        for (let j = 0; j < n; j++) {\n            if (i === j || i + j === n - 1) row += '*';\n            else row += ' ';\n        }\n        lines.push(row);\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String xPattern(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < n; j++) {\n            sb.append((i == j || i + j == n - 1) ? '*' : ' ');\n        }\n        if (i < n - 1) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('for') && code.includes('*') && (code.includes('i + j') || code.includes('i+j'))
+          },
+          {
+            id: 'cond-star-6',
+            title: 'Hourglass',
+            desc: 'Write a function that prints an hourglass pattern of stars with n rows for the top half. n rows top, n-1 rows bottom.',
+            inputExample: 'n = 4',
+            outputExample: '*******\\n *****\\n  ***\\n   *\\n  ***\\n *****\\n*******',
+            constraints: ['2 <= n <= 10'],
+            templates: {
+              python: `def hourglass(n):\n    lines = []\n    for i in range(n):\n        lines.append(' ' * i + '*' * (2 * (n - i) - 1))\n    for i in range(2, n + 1):\n        lines.append(' ' * (n - i) + '*' * (2 * i - 1))\n    return '\\n'.join(lines)\n`,
+              javascript: `function hourglass(n) {\n    const lines = [];\n    for (let i = 0; i < n; i++) {\n        lines.push(' '.repeat(i) + '*'.repeat(2 * (n - i) - 1));\n    }\n    for (let i = 2; i <= n; i++) {\n        lines.push(' '.repeat(n - i) + '*'.repeat(2 * i - 1));\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String hourglass(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 0; i < n; i++) {\n        for (int s = 0; s < i; s++) sb.append(' ');\n        for (int j = 0; j < 2 * (n - i) - 1; j++) sb.append('*');\n        sb.append('\\n');\n    }\n    for (int i = 2; i <= n; i++) {\n        for (int s = 0; s < n - i; s++) sb.append(' ');\n        for (int j = 0; j < 2 * i - 1; j++) sb.append('*');\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('for') && (code.includes('hourglass') || (code.includes('*') && code.includes('i--')))
+          },
+          {
+            id: 'cond-star-7',
+            title: 'Right Pascal',
+            desc: 'Write a function that prints a right-aligned Pascal triangle of stars. n rows increasing, then n-1 rows decreasing.',
+            inputExample: 'n = 4',
+            outputExample: '*\\n**\\n***\\n****\\n***\\n**\\n*',
+            constraints: ['1 <= n <= 15'],
+            templates: {
+              python: `def right_pascal(n):\n    lines = []\n    for i in range(1, n + 1):\n        lines.append('*' * i)\n    for i in range(n - 1, 0, -1):\n        lines.append('*' * i)\n    return '\\n'.join(lines)\n`,
+              javascript: `function rightPascal(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) lines.push('*'.repeat(i));\n    for (let i = n - 1; i >= 1; i--) lines.push('*'.repeat(i));\n    return lines.join('\\n');\n}\n`,
+              java: `public static String rightPascal(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        for (int j = 0; j < i; j++) sb.append('*');\n        sb.append('\\n');\n    }\n    for (int i = n - 1; i >= 1; i--) {\n        for (int j = 0; j < i; j++) sb.append('*');\n        if (i > 1) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('for') && code.includes('*') && (code.includes('pascal') || code.includes('i--'))
+          },
+          {
+            id: 'cond-star-8',
+            title: 'Left Pascal',
+            desc: 'Write a function that prints a left-aligned Pascal triangle of stars. Spaces + stars to center-align each row.',
+            inputExample: 'n = 4',
+            outputExample: '   *\\n  **\\n ***\\n****\\n ***\\n  **\\n   *',
+            constraints: ['1 <= n <= 15'],
+            templates: {
+              python: `def left_pascal(n):\n    lines = []\n    for i in range(1, n + 1):\n        lines.append(' ' * (n - i) + '*' * i)\n    for i in range(n - 1, 0, -1):\n        lines.append(' ' * (n - i) + '*' * i)\n    return '\\n'.join(lines)\n`,
+              javascript: `function leftPascal(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) lines.push(' '.repeat(n - i) + '*'.repeat(i));\n    for (let i = n - 1; i >= 1; i--) lines.push(' '.repeat(n - i) + '*'.repeat(i));\n    return lines.join('\\n');\n}\n`,
+              java: `public static String leftPascal(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        for (int s = 0; s < n - i; s++) sb.append(' ');\n        for (int j = 0; j < i; j++) sb.append('*');\n        sb.append('\\n');\n    }\n    for (int i = n - 1; i >= 1; i--) {\n        for (int s = 0; s < n - i; s++) sb.append(' ');\n        for (int j = 0; j < i; j++) sb.append('*');\n        if (i > 1) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('for') && code.includes('*') && code.includes('spaces')
+          },
+          {
+            id: 'cond-star-9',
+            title: 'Butterfly',
+            desc: 'Write a function that prints a butterfly pattern of stars with n rows each wing. Stars expand then contract symmetrically.',
+            inputExample: 'n = 4',
+            outputExample: '*      *\\n**    **\\n***  ***\\n********\\n***  ***\\n**    **\\n*      *',
+            constraints: ['2 <= n <= 10'],
+            templates: {
+              python: `def butterfly(n):\n    lines = []\n    for i in range(1, n + 1):\n        left = '*' * i\n        gap = ' ' * (2 * (n - i))\n        lines.append(left + gap + left)\n    for i in range(n - 1, 0, -1):\n        left = '*' * i\n        gap = ' ' * (2 * (n - i))\n        lines.append(left + gap + left)\n    return '\\n'.join(lines)\n`,
+              javascript: `function butterfly(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        const left = '*'.repeat(i);\n        const gap = ' '.repeat(2 * (n - i));\n        lines.push(left + gap + left);\n    }\n    for (let i = n - 1; i >= 1; i--) {\n        const left = '*'.repeat(i);\n        const gap = ' '.repeat(2 * (n - i));\n        lines.push(left + gap + left);\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String butterfly(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        for (int j = 0; j < i; j++) sb.append('*');\n        for (int j = 0; j < 2 * (n - i); j++) sb.append(' ');\n        for (int j = 0; j < i; j++) sb.append('*');\n        sb.append('\\n');\n    }\n    for (int i = n - 1; i >= 1; i--) {\n        for (int j = 0; j < i; j++) sb.append('*');\n        for (int j = 0; j < 2 * (n - i); j++) sb.append(' ');\n        for (int j = 0; j < i; j++) sb.append('*');\n        if (i > 1) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('for') && code.includes('*') && (code.includes('butterfly') || code.includes('gap'))
+          },
+          {
+            id: 'cond-star-10',
+            title: 'Rhombus',
+            desc: 'Write a function that prints a solid rhombus of stars with side length n. Each row has (n-i) spaces then n stars.',
+            inputExample: 'n = 4',
+            outputExample: '   ****\\n  ****\\n ****\\n****',
+            constraints: ['1 <= n <= 15'],
+            templates: {
+              python: `def rhombus(n):\n    lines = []\n    for i in range(1, n + 1):\n        spaces = ' ' * (n - i)\n        lines.append(spaces + '*' * n)\n    return '\\n'.join(lines)\n`,
+              javascript: `function rhombus(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        lines.push(' '.repeat(n - i) + '*'.repeat(n));\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String rhombus(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        for (int s = 0; s < n - i; s++) sb.append(' ');\n        for (int j = 0; j < n; j++) sb.append('*');\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('for') && code.includes('*') && code.includes('rhombus')
           }
         ]
       },
@@ -287,7 +616,8 @@ const PYTHON_MODULES = [
             constraints: ['1 <= n <= 15'],
             templates: {
               python: `def floyds_triangle(n):\n    lines = []\n    num = 1\n    for i in range(1, n + 1):\n        row = ' '.join(str(num + j) for j in range(i))\n        lines.append(row)\n        num += i\n    return '\\n'.join(lines)\n`,
-              javascript: `function floydsTriangle(n) {\n    const lines = [];\n    let num = 1;\n    for (let i = 1; i <= n; i++) {\n        const row = [];\n        for (let j = 0; j < i; j++) {\n            row.push(num++);\n        }\n        lines.push(row.join(' '));\n    }\n    return lines.join('\\n');\n}\n`
+              javascript: `function floydsTriangle(n) {\n    const lines = [];\n    let num = 1;\n    for (let i = 1; i <= n; i++) {\n        const row = [];\n        for (let j = 0; j < i; j++) {\n            row.push(num++);\n        }\n        lines.push(row.join(' '));\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String floydsTriangle(int n) {\n    StringBuilder sb = new StringBuilder();\n    int num = 1;\n    for (int i = 1; i <= n; i++) {\n        for (int j = 0; j < i; j++) {\n            sb.append(num++);\n            if (j < i - 1) sb.append(' ');\n        }\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
             },
             verifyKeyword: (code) => code.includes('for') && (code.includes('num') || code.includes('row'))
           },
@@ -300,9 +630,122 @@ const PYTHON_MODULES = [
             constraints: ['1 <= n <= 9'],
             templates: {
               python: `def number_pyramid(n):\n    lines = []\n    for i in range(1, n + 1):\n        spaces = ' ' * (n - i)\n        nums = ' '.join(str(j) for j in range(1, i + 1))\n        lines.append(spaces + nums)\n    return '\\n'.join(lines)\n`,
-              javascript: `function numberPyramid(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        const spaces = ' '.repeat(n - i);\n        const nums = [];\n        for (let j = 1; j <= i; j++) nums.push(j);\n        lines.push(spaces + nums.join(' '));\n    }\n    return lines.join('\\n');\n}\n`
+              javascript: `function numberPyramid(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        const spaces = ' '.repeat(n - i);\n        const nums = [];\n        for (let j = 1; j <= i; j++) nums.push(j);\n        lines.push(spaces + nums.join(' '));\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String numberPyramid(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        for (int s = 0; s < n - i; s++) sb.append(' ');\n        for (int j = 1; j <= i; j++) {\n            sb.append(j);\n            if (j < i) sb.append(' ');\n        }\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
             },
             verifyKeyword: (code) => code.includes('for') && (code.includes('spaces') || code.includes('nums'))
+          },
+          {
+            id: 'cond-num-3',
+            title: 'Palindrome Triangle',
+            desc: 'Write a function that prints a palindrome number triangle with n rows. Row i: 1..i..1.',
+            inputExample: 'n = 4',
+            outputExample: '1\\n121\\n12321\\n1234321',
+            constraints: ['1 <= n <= 9'],
+            templates: {
+              python: `def palindrome_triangle(n):\n    lines = []\n    for i in range(1, n + 1):\n        row = ''.join(str(j) for j in range(1, i + 1))\n        row += ''.join(str(j) for j in range(i - 1, 0, -1))\n        lines.append(row)\n    return '\\n'.join(lines)\n`,
+              javascript: `function palindromeTriangle(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        let row = '';\n        for (let j = 1; j <= i; j++) row += j;\n        for (let j = i - 1; j >= 1; j--) row += j;\n        lines.push(row);\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String palindromeTriangle(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        for (int j = 1; j <= i; j++) sb.append(j);\n        for (int j = i - 1; j >= 1; j--) sb.append(j);\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('palindrome') || (code.includes('range') && code.includes('-1'))
+          },
+          {
+            id: 'cond-num-4',
+            title: 'Pascal\'s Triangle',
+            desc: 'Write a function that prints Pascal\'s Triangle with n rows. Each value is the sum of the two values above it.',
+            inputExample: 'n = 5',
+            outputExample: '1\\n1 1\\n1 2 1\\n1 3 3 1\\n1 4 6 4 1',
+            constraints: ['1 <= n <= 10'],
+            templates: {
+              python: `def pascals_triangle(n):\n    lines = []\n    for i in range(n):\n        row = []\n        val = 1\n        for j in range(i + 1):\n            row.append(str(val))\n            val = val * (i - j) // (j + 1)\n        lines.append(' '.join(row))\n    return '\\n'.join(lines)\n`,
+              javascript: `function pascalsTriangle(n) {\n    const lines = [];\n    for (let i = 0; i < n; i++) {\n        const row = [];\n        let val = 1;\n        for (let j = 0; j <= i; j++) {\n            row.push(val);\n            val = val * (i - j) / (j + 1);\n        }\n        lines.push(row.join(' '));\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String pascalsTriangle(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 0; i < n; i++) {\n        int val = 1;\n        for (int j = 0; j <= i; j++) {\n            sb.append(val);\n            if (j < i) sb.append(' ');\n            val = val * (i - j) / (j + 1);\n        }\n        if (i < n - 1) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('pascal') || (code.includes('val') && (code.includes('//') || code.includes('/')))
+          },
+          {
+            id: 'cond-num-5',
+            title: 'Number Diamond',
+            desc: 'Write a function that prints a diamond pattern with numbers 1 to n at the widest row.',
+            inputExample: 'n = 3',
+            outputExample: '  1\\n 121\\n12321\\n 121\\n  1',
+            constraints: ['1 <= n <= 9'],
+            templates: {
+              python: `def number_diamond(n):\n    lines = []\n    for i in range(1, n + 1):\n        spaces = ' ' * (n - i)\n        nums = ''.join(str(j) for j in range(1, i + 1))\n        nums += ''.join(str(j) for j in range(i - 1, 0, -1))\n        lines.append(spaces + nums)\n    for i in range(n - 1, 0, -1):\n        spaces = ' ' * (n - i)\n        nums = ''.join(str(j) for j in range(1, i + 1))\n        nums += ''.join(str(j) for j in range(i - 1, 0, -1))\n        lines.append(spaces + nums)\n    return '\\n'.join(lines)\n`,
+              javascript: `function numberDiamond(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        const spaces = ' '.repeat(n - i);\n        let nums = '';\n        for (let j = 1; j <= i; j++) nums += j;\n        for (let j = i - 1; j >= 1; j--) nums += j;\n        lines.push(spaces + nums);\n    }\n    for (let i = n - 1; i >= 1; i--) {\n        const spaces = ' '.repeat(n - i);\n        let nums = '';\n        for (let j = 1; j <= i; j++) nums += j;\n        for (let j = i - 1; j >= 1; j--) nums += j;\n        lines.push(spaces + nums);\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String numberDiamond(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        for (int s = 0; s < n - i; s++) sb.append(' ');\n        for (int j = 1; j <= i; j++) sb.append(j);\n        for (int j = i - 1; j >= 1; j--) sb.append(j);\n        sb.append('\\n');\n    }\n    for (int i = n - 1; i >= 1; i--) {\n        for (int s = 0; s < n - i; s++) sb.append(' ');\n        for (int j = 1; j <= i; j++) sb.append(j);\n        for (int j = i - 1; j >= 1; j--) sb.append(j);\n        if (i > 1) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('diamond') && (code.includes('num') || code.includes('j'))
+          },
+          {
+            id: 'cond-num-6',
+            title: 'Zigzag Numbers',
+            desc: 'Write a function that prints a zigzag number pattern with n rows. Row 1: 1, Row 2: 3 2, Row 3: 4 5 6, Row 4: 10 9 8 7.',
+            inputExample: 'n = 4',
+            outputExample: '1\\n3 2\\n4 5 6\\n10 9 8 7',
+            constraints: ['1 <= n <= 10'],
+            templates: {
+              python: `def zigzag_numbers(n):\n    lines = []\n    num = 1\n    for i in range(1, n + 1):\n        row = []\n        for j in range(i):\n            row.append(str(num))\n            num += 1\n        if i % 2 == 0:\n            lines.append(' '.join(reversed(row)))\n        else:\n            lines.append(' '.join(row))\n    return '\\n'.join(lines)\n`,
+              javascript: `function zigzagNumbers(n) {\n    const lines = [];\n    let num = 1;\n    for (let i = 1; i <= n; i++) {\n        const row = [];\n        for (let j = 0; j < i; j++) row.push(num++);\n        if (i % 2 === 0) row.reverse();\n        lines.push(row.join(' '));\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String zigzagNumbers(int n) {\n    StringBuilder sb = new StringBuilder();\n    int num = 1;\n    for (int i = 1; i <= n; i++) {\n        int[] row = new int[i];\n        for (int j = 0; j < i; j++) row[j] = num++;\n        if (i % 2 == 0) {\n            for (int j = i - 1; j >= 0; j--) {\n                sb.append(row[j]);\n                if (j > 0) sb.append(' ');\n            }\n        } else {\n            for (int j = 0; j < i; j++) {\n                sb.append(row[j]);\n                if (j < i - 1) sb.append(' ');\n            }\n        }\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('zigzag') || (code.includes('reversed') || code.includes('reverse'))
+          },
+          {
+            id: 'cond-num-7',
+            title: 'Binary Pyramid',
+            desc: 'Write a function that prints a pyramid of binary digits (0/1). Row i has i binary digits, starting with 1 and alternating.',
+            inputExample: 'n = 4',
+            outputExample: '1\\n01\\n101\\n0101',
+            constraints: ['1 <= n <= 10'],
+            templates: {
+              python: `def binary_pyramid(n):\n    lines = []\n    for i in range(1, n + 1):\n        row = ''.join(str((i + j) % 2) for j in range(i))\n        lines.append(row)\n    return '\\n'.join(lines)\n`,
+              javascript: `function binaryPyramid(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        let row = '';\n        for (let j = 0; j < i; j++) row += (i + j) % 2;\n        lines.push(row);\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String binaryPyramid(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        for (int j = 0; j < i; j++) sb.append((i + j) % 2);\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('binary') || (code.includes('%') && code.includes('2'))
+          },
+          {
+            id: 'cond-num-8',
+            title: 'Sum Triangle',
+            desc: 'Write a function that prints a triangle where each number is the sum of the two numbers above it (like Pascal but with sums).',
+            inputExample: 'n = 4',
+            outputExample: '1\\n2 3\\n4 5 6\\n7 8 9 10',
+            constraints: ['1 <= n <= 10'],
+            templates: {
+              python: `def sum_triangle(n):\n    lines = []\n    num = 1\n    for i in range(1, n + 1):\n        row = []\n        for j in range(i):\n            row.append(str(num))\n            num += 1\n        lines.append(' '.join(row))\n    return '\\n'.join(lines)\n`,
+              javascript: `function sumTriangle(n) {\n    const lines = [];\n    let num = 1;\n    for (let i = 1; i <= n; i++) {\n        const row = [];\n        for (let j = 0; j < i; j++) row.push(num++);\n        lines.push(row.join(' '));\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String sumTriangle(int n) {\n    StringBuilder sb = new StringBuilder();\n    int num = 1;\n    for (int i = 1; i <= n; i++) {\n        for (int j = 0; j < i; j++) {\n            sb.append(num++);\n            if (j < i - 1) sb.append(' ');\n        }\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('for') && code.includes('num') && code.includes('row')
+          },
+          {
+            id: 'cond-num-9',
+            title: 'Repeated Number Triangle',
+            desc: 'Write a function that prints a triangle where row i contains the number i repeated i times.',
+            inputExample: 'n = 5',
+            outputExample: '1\\n22\\n333\\n4444\\n55555',
+            constraints: ['1 <= n <= 9'],
+            templates: {
+              python: `def repeated_num_triangle(n):\n    lines = []\n    for i in range(1, n + 1):\n        lines.append(str(i) * i)\n    return '\\n'.join(lines)\n`,
+              javascript: `function repeatedNumTriangle(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) lines.push(String(i).repeat(i));\n    return lines.join('\\n');\n}\n`,
+              java: `public static String repeatedNumTriangle(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        for (int j = 0; j < i; j++) sb.append(i);\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('repeat') || (code.includes('for') && code.includes('str(i)'))
+          },
+          {
+            id: 'cond-num-10',
+            title: 'Sequential Number Square',
+            desc: 'Write a function that prints a square of size n filled with sequential numbers row by row.',
+            inputExample: 'n = 4',
+            outputExample: '1 2 3 4\\n5 6 7 8\\n9 10 11 12\\n13 14 15 16',
+            constraints: ['1 <= n <= 10'],
+            templates: {
+              python: `def sequential_square(n):\n    lines = []\n    num = 1\n    for i in range(n):\n        row = ' '.join(str(num + j) for j in range(n))\n        lines.append(row)\n        num += n\n    return '\\n'.join(lines)\n`,
+              javascript: `function sequentialSquare(n) {\n    const lines = [];\n    let num = 1;\n    for (let i = 0; i < n; i++) {\n        const row = [];\n        for (let j = 0; j < n; j++) row.push(num++);\n        lines.push(row.join(' '));\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String sequentialSquare(int n) {\n    StringBuilder sb = new StringBuilder();\n    int num = 1;\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < n; j++) {\n            sb.append(num++);\n            if (j < n - 1) sb.append(' ');\n        }\n        if (i < n - 1) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('for') && code.includes('num') && code.includes('square')
           }
         ]
       },
@@ -320,22 +763,136 @@ const PYTHON_MODULES = [
             constraints: ['1 <= n <= 26'],
             templates: {
               python: `def alpha_triangle(n):\n    lines = []\n    for i in range(n):\n        lines.append(chr(65 + i) * (i + 1))\n    return '\\n'.join(lines)\n`,
-              javascript: `function alphaTriangle(n) {\n    const lines = [];\n    for (let i = 0; i < n; i++) {\n        lines.push(String.fromCharCode(65 + i).repeat(i + 1));\n    }\n    return lines.join('\\n');\n}\n`
+              javascript: `function alphaTriangle(n) {\n    const lines = [];\n    for (let i = 0; i < n; i++) {\n        lines.push(String.fromCharCode(65 + i).repeat(i + 1));\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String alphaTriangle(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j <= i; j++) sb.append((char)(65 + i));\n        if (i < n - 1) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
             },
             verifyKeyword: (code) => code.includes('chr') || code.includes('fromCharCode') || (code.includes('65') && code.includes('repeat'))
           },
           {
             id: 'cond-alpha-2',
-            title: 'Alphabet Pyramid (Hard)',
+            title: 'Alphabet Pyramid',
             desc: 'Write a function that prints a pyramid of letters. Row i has letters from A to the ith letter, centered.',
             inputExample: 'n = 4',
             outputExample: '   A\\n  AB\\n ABC\\nABCD',
             constraints: ['1 <= n <= 26'],
             templates: {
               python: `def alpha_pyramid(n):\n    lines = []\n    for i in range(1, n + 1):\n        spaces = ' ' * (n - i)\n        letters = ''.join(chr(65 + j) for j in range(i))\n        lines.append(spaces + letters)\n    return '\\n'.join(lines)\n`,
-              javascript: `function alphaPyramid(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        const spaces = ' '.repeat(n - i);\n        let letters = '';\n        for (let j = 0; j < i; j++) letters += String.fromCharCode(65 + j);\n        lines.push(spaces + letters);\n    }\n    return lines.join('\\n');\n}\n`
+              javascript: `function alphaPyramid(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        const spaces = ' '.repeat(n - i);\n        let letters = '';\n        for (let j = 0; j < i; j++) letters += String.fromCharCode(65 + j);\n        lines.push(spaces + letters);\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String alphaPyramid(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        for (int s = 0; s < n - i; s++) sb.append(' ');\n        for (int j = 0; j < i; j++) sb.append((char)(65 + j));\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
             },
             verifyKeyword: (code) => code.includes('chr') || code.includes('fromCharCode') || code.includes('65')
+          },
+          {
+            id: 'cond-alpha-3',
+            title: 'Reverse Alphabet Triangle',
+            desc: 'Write a function that prints a reversed alphabet triangle. Row i has letters from the (n-i)th letter downwards.',
+            inputExample: 'n = 4',
+            outputExample: 'ABCD\\nABC\\nAB\\nA',
+            constraints: ['1 <= n <= 26'],
+            templates: {
+              python: `def reverse_alpha_triangle(n):\n    lines = []\n    for i in range(n, 0, -1):\n        letters = ''.join(chr(65 + j) for j in range(i))\n        lines.append(letters)\n    return '\\n'.join(lines)\n`,
+              javascript: `function reverseAlphaTriangle(n) {\n    const lines = [];\n    for (let i = n; i >= 1; i--) {\n        let letters = '';\n        for (let j = 0; j < i; j++) letters += String.fromCharCode(65 + j);\n        lines.push(letters);\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String reverseAlphaTriangle(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = n; i >= 1; i--) {\n        for (int j = 0; j < i; j++) sb.append((char)(65 + j));\n        if (i > 1) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('chr') || code.includes('fromCharCode') || code.includes('65')
+          },
+          {
+            id: 'cond-alpha-4',
+            title: 'Alphabet Diamond',
+            desc: 'Write a function that prints a diamond-shaped alphabet pattern. Top half expands, bottom half contracts.',
+            inputExample: 'n = 3',
+            outputExample: '  A\\n ABA\\nABCBA\\n ABA\\n  A',
+            constraints: ['1 <= n <= 13'],
+            templates: {
+              python: `def alpha_diamond(n):\n    lines = []\n    for i in range(1, n + 1):\n        spaces = ' ' * (n - i)\n        left = ''.join(chr(65 + j) for j in range(i))\n        right = ''.join(chr(65 + j) for j in range(i - 2, -1, -1))\n        lines.append(spaces + left + right)\n    for i in range(n - 1, 0, -1):\n        spaces = ' ' * (n - i)\n        left = ''.join(chr(65 + j) for j in range(i))\n        right = ''.join(chr(65 + j) for j in range(i - 2, -1, -1))\n        lines.append(spaces + left + right)\n    return '\\n'.join(lines)\n`,
+              javascript: `function alphaDiamond(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        const spaces = ' '.repeat(n - i);\n        let left = '', right = '';\n        for (let j = 0; j < i; j++) left += String.fromCharCode(65 + j);\n        for (let j = i - 2; j >= 0; j--) right += String.fromCharCode(65 + j);\n        lines.push(spaces + left + right);\n    }\n    for (let i = n - 1; i >= 1; i--) {\n        const spaces = ' '.repeat(n - i);\n        let left = '', right = '';\n        for (let j = 0; j < i; j++) left += String.fromCharCode(65 + j);\n        for (let j = i - 2; j >= 0; j--) right += String.fromCharCode(65 + j);\n        lines.push(spaces + left + right);\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String alphaDiamond(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        for (int s = 0; s < n - i; s++) sb.append(' ');\n        for (int j = 0; j < i; j++) sb.append((char)(65 + j));\n        for (int j = i - 2; j >= 0; j--) sb.append((char)(65 + j));\n        sb.append('\\n');\n    }\n    for (int i = n - 1; i >= 1; i--) {\n        for (int s = 0; s < n - i; s++) sb.append(' ');\n        for (int j = 0; j < i; j++) sb.append((char)(65 + j));\n        for (int j = i - 2; j >= 0; j--) sb.append((char)(65 + j));\n        if (i > 1) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('diamond') && (code.includes('chr') || code.includes('fromCharCode'))
+          },
+          {
+            id: 'cond-alpha-5',
+            title: 'Continuous Alphabet Pyramid',
+            desc: 'Write a function that prints a pyramid where letters continue sequentially across rows. Row 1: A, Row 2: BC, Row 3: DEF.',
+            inputExample: 'n = 4',
+            outputExample: 'A\\nBC\\nDEF\\nGHIJ',
+            constraints: ['1 <= n <= 26'],
+            templates: {
+              python: `def continuous_alpha_pyramid(n):\n    lines = []\n    ch = 0\n    for i in range(1, n + 1):\n        row = ''.join(chr(65 + ch + j) for j in range(i))\n        lines.append(row)\n        ch += i\n    return '\\n'.join(lines)\n`,
+              javascript: `function continuousAlphaPyramid(n) {\n    const lines = [];\n    let ch = 0;\n    for (let i = 1; i <= n; i++) {\n        let row = '';\n        for (let j = 0; j < i; j++) row += String.fromCharCode(65 + ch + j);\n        lines.push(row);\n        ch += i;\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String continuousAlphaPyramid(int n) {\n    StringBuilder sb = new StringBuilder();\n    int ch = 0;\n    for (int i = 1; i <= n; i++) {\n        for (int j = 0; j < i; j++) sb.append((char)(65 + ch + j));\n        ch += i;\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('chr') || code.includes('fromCharCode') || code.includes('65')
+          },
+          {
+            id: 'cond-alpha-6',
+            title: 'Letter Frequency Triangle',
+            desc: 'Write a function that prints a triangle where row i contains letter i repeated i times.',
+            inputExample: 'n = 4',
+            outputExample: 'A\\nBB\\nCCC\\nDDDD',
+            constraints: ['1 <= n <= 26'],
+            templates: {
+              python: `def letter_freq_triangle(n):\n    lines = []\n    for i in range(1, n + 1):\n        lines.append(chr(64 + i) * i)\n    return '\\n'.join(lines)\n`,
+              javascript: `function letterFreqTriangle(n) {\n    const lines = [];\n    for (let i = 1; i <= n; i++) {\n        lines.push(String.fromCharCode(64 + i).repeat(i));\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String letterFreqTriangle(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 1; i <= n; i++) {\n        for (int j = 0; j < i; j++) sb.append((char)(64 + i));\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('chr') || code.includes('fromCharCode') || code.includes('64')
+          },
+          {
+            id: 'cond-alpha-7',
+            title: 'Vowel-Consonant Pattern',
+            desc: 'Write a function that prints a triangle alternating between vowels (A, E, I, O, U) and consonants. Use letters sequentially but mark V/C.',
+            inputExample: 'n = 4',
+            outputExample: 'A(V)\\nB(C) C(C)\\nD(C) E(V) F(C)\\nG(C) H(C) I(V) J(C)',
+            constraints: ['1 <= n <= 10'],
+            templates: {
+              python: `def vowel_consonant_pattern(n):\n    vowels = set('AEIOU')\n    lines = []\n    ch = 0\n    for i in range(1, n + 1):\n        row = []\n        for j in range(i):\n            letter = chr(65 + ch)\n            label = 'V' if letter in vowels else 'C'\n            row.append(f'{letter}({label})')\n            ch += 1\n        lines.append(' '.join(row))\n    return '\\n'.join(lines)\n`,
+              javascript: `function vowelConsonantPattern(n) {\n    const vowels = new Set(['A','E','I','O','U']);\n    const lines = [];\n    let ch = 0;\n    for (let i = 1; i <= n; i++) {\n        const row = [];\n        for (let j = 0; j < i; j++) {\n            const letter = String.fromCharCode(65 + ch);\n            const label = vowels.has(letter) ? 'V' : 'C';\n            row.push(letter + '(' + label + ')');\n            ch++;\n        }\n        lines.push(row.join(' '));\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String vowelConsonantPattern(int n) {\n    StringBuilder sb = new StringBuilder();\n    String vowels = "AEIOU";\n    int ch = 0;\n    for (int i = 1; i <= n; i++) {\n        for (int j = 0; j < i; j++) {\n            char letter = (char)(65 + ch);\n            String label = vowels.indexOf(letter) != -1 ? "V" : "C";\n            sb.append(letter).append('(').append(label).append(')');\n            if (j < i - 1) sb.append(' ');\n            ch++;\n        }\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('vowel') || code.includes('Vowel') || code.includes('AEIOU')
+          },
+          {
+            id: 'cond-alpha-8',
+            title: 'Alphabet Hourglass',
+            desc: 'Write a function that prints an hourglass pattern of letters. Top half expands from A, bottom half contracts back.',
+            inputExample: 'n = 3',
+            outputExample: 'ABCBA\\n ABA\\n  A',
+            constraints: ['1 <= n <= 13'],
+            templates: {
+              python: `def alpha_hourglass(n):\n    lines = []\n    for i in range(n, 0, -1):\n        spaces = ' ' * (n - i)\n        left = ''.join(chr(65 + j) for j in range(i))\n        right = ''.join(chr(65 + j) for j in range(i - 2, -1, -1))\n        lines.append(spaces + left + right)\n    return '\\n'.join(lines)\n`,
+              javascript: `function alphaHourglass(n) {\n    const lines = [];\n    for (let i = n; i >= 1; i--) {\n        const spaces = ' '.repeat(n - i);\n        let left = '', right = '';\n        for (let j = 0; j < i; j++) left += String.fromCharCode(65 + j);\n        for (let j = i - 2; j >= 0; j--) right += String.fromCharCode(65 + j);\n        lines.push(spaces + left + right);\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String alphaHourglass(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = n; i >= 1; i--) {\n        for (int s = 0; s < n - i; s++) sb.append(' ');\n        for (int j = 0; j < i; j++) sb.append((char)(65 + j));\n        for (int j = i - 2; j >= 0; j--) sb.append((char)(65 + j));\n        if (i > 1) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('chr') || code.includes('fromCharCode') || (code.includes('hourglass') && code.includes('65'))
+          },
+          {
+            id: 'cond-alpha-9',
+            title: 'Letter Bridge',
+            desc: 'Write a function that prints a bridge pattern of letters. Row 1: all letters, each subsequent row removes the first and last letter.',
+            inputExample: 'n = 4',
+            outputExample: 'ABCD\\n BC\\n  C',
+            constraints: ['2 <= n <= 13'],
+            templates: {
+              python: `def letter_bridge(n):\n    lines = []\n    for i in range((n + 1) // 2):\n        spaces = ' ' * i\n        letters = ''.join(chr(65 + j) for j in range(i, n - i))\n        lines.append(spaces + letters)\n    return '\\n'.join(lines)\n`,
+              javascript: `function letterBridge(n) {\n    const lines = [];\n    for (let i = 0; i < Math.ceil(n / 2); i++) {\n        const spaces = ' '.repeat(i);\n        let letters = '';\n        for (let j = i; j < n - i; j++) letters += String.fromCharCode(65 + j);\n        lines.push(spaces + letters);\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String letterBridge(int n) {\n    StringBuilder sb = new StringBuilder();\n    for (int i = 0; i < (n + 1) / 2; i++) {\n        for (int s = 0; s < i; s++) sb.append(' ');\n        for (int j = i; j < n - i; j++) sb.append((char)(65 + j));\n        if (i < (n + 1) / 2 - 1) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('chr') || code.includes('fromCharCode') || code.includes('bridge')
+          },
+          {
+            id: 'cond-alpha-10',
+            title: 'Zigzag Alphabet',
+            desc: 'Write a function that prints a zigzag alphabet pattern with n rows. Odd rows go left-to-right, even rows go right-to-left.',
+            inputExample: 'n = 4',
+            outputExample: 'A\\nCB\\nDEF\\nJIHG',
+            constraints: ['1 <= n <= 10'],
+            templates: {
+              python: `def zigzag_alpha(n):\n    lines = []\n    ch = 0\n    for i in range(1, n + 1):\n        row = [chr(65 + ch + j) for j in range(i)]\n        if i % 2 == 0:\n            row.reverse()\n        lines.append(''.join(row))\n        ch += i\n    return '\\n'.join(lines)\n`,
+              javascript: `function zigzagAlpha(n) {\n    const lines = [];\n    let ch = 0;\n    for (let i = 1; i <= n; i++) {\n        const row = [];\n        for (let j = 0; j < i; j++) row.push(String.fromCharCode(65 + ch + j));\n        if (i % 2 === 0) row.reverse();\n        lines.push(row.join(''));\n        ch += i;\n    }\n    return lines.join('\\n');\n}\n`,
+              java: `public static String zigzagAlpha(int n) {\n    StringBuilder sb = new StringBuilder();\n    int ch = 0;\n    for (int i = 1; i <= n; i++) {\n        char[] row = new char[i];\n        for (int j = 0; j < i; j++) row[j] = (char)(65 + ch + j);\n        if (i % 2 == 0) {\n            for (int j = i - 1; j >= 0; j--) sb.append(row[j]);\n        } else {\n            for (int j = 0; j < i; j++) sb.append(row[j]);\n        }\n        ch += i;\n        if (i < n) sb.append('\\n');\n    }\n    return sb.toString();\n}\n`
+            },
+            verifyKeyword: (code) => code.includes('chr') || code.includes('fromCharCode') || (code.includes('zigzag') && code.includes('reverse'))
           }
         ]
       }
