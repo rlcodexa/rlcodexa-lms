@@ -12,12 +12,56 @@ const APTITUDE_MODULES = [
       {
         id: 'ns-basics',
         title: 'Basics & Properties',
+        groups: [
+          {
+            id: 'ns-basics-mod1',
+            title: 'Module 1',
+            questions: [
+              { q: 'What is the sum of the first 20 natural numbers?', options: ['190', '210', '200', '220'], answer: 1 },
+              { q: 'Which of the following is a prime number?', options: ['87', '89', '91', '93'], answer: 1 },
+              { q: 'The value of 5! (5 factorial) is:', options: ['60', '120', '24', '720'], answer: 1 },
+              { q: 'How many factors does the number 36 have?', options: ['6', '7', '8', '9'], answer: 2 },
+              { q: 'What is the place value of 6 in 4,56,789?', options: ['6000', '60000', '600', '6'], answer: 0 }
+            ]
+          },
+          {
+            id: 'ns-basics-mod2',
+            title: 'Module 2',
+            questions: [
+              { q: 'The smallest 3-digit prime number is:', options: ['101', '103', '107', '109'], answer: 0 },
+              { q: 'How many factors does 48 have?', options: ['10', '8', '12', '9'], answer: 0 },
+              { q: 'What is the sum of first 10 even numbers?', options: ['110', '100', '90', '120'], answer: 0 },
+              { q: 'Which is the largest 4-digit number?', options: ['9999', '9998', '10000', '99999'], answer: 0 },
+              { q: 'What is the face value of 7 in 3,75,621?', options: ['7', '70000', '7000', '700'], answer: 0 }
+            ]
+          },
+          {
+            id: 'ns-basics-mod3',
+            title: 'Module 3',
+            questions: [
+              { q: 'The number of zeroes in 100! (100 factorial) at the end is:', options: ['24', '20', '22', '25'], answer: 0 },
+              { q: 'What is the smallest composite number?', options: ['4', '2', '1', '6'], answer: 0 },
+              { q: 'How many prime numbers are between 1 and 50?', options: ['15', '12', '18', '10'], answer: 0 },
+              { q: 'The sum of first 15 natural numbers is:', options: ['120', '105', '110', '130'], answer: 0 },
+              { q: 'What is the product of first 4 prime numbers?', options: ['210', '120', '240', '180'], answer: 0 }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'ns-properties',
+        title: 'Number Properties',
         questions: [
-          { q: 'What is the sum of the first 20 natural numbers?', options: ['190', '210', '200', '220'], answer: 1 },
-          { q: 'Which of the following is a prime number?', options: ['87', '89', '91', '93'], answer: 1 },
-          { q: 'The value of 5! (5 factorial) is:', options: ['60', '120', '24', '720'], answer: 1 },
-          { q: 'How many factors does the number 36 have?', options: ['6', '7', '8', '9'], answer: 2 },
-          { q: 'What is the place value of 6 in 4,56,789?', options: ['6000', '60000', '600', '6'], answer: 0 }
+          { q: 'Which of the following is an irrational number?', options: ['√2', '4', '0.5', '22/7'], answer: 0 },
+          { q: 'The smallest prime number is:', options: ['2', '1', '3', '0'], answer: 0 },
+          { q: 'How many whole numbers are between 32 and 53?', options: ['20', '21', '22', '19'], answer: 0 },
+          { q: 'Which is the only even prime number?', options: ['2', '4', '1', '3'], answer: 0 },
+          { q: 'The sum of first 5 odd numbers is:', options: ['25', '15', '20', '30'], answer: 0 },
+          { q: 'A number divisible by both 2 and 3 is divisible by:', options: ['6', '5', '4', '8'], answer: 0 },
+          { q: 'How many prime numbers are between 50 and 100?', options: ['10', '12', '8', '15'], answer: 0 },
+          { q: 'The only prime number that is even is:', options: ['2', '4', '1', '3'], answer: 0 },
+          { q: 'A number divisible by 5 ends with:', options: ['0 or 5', '0 or 2', '5 or 10', '0 or 1'], answer: 0 },
+          { q: 'Which of the following is a composite number?', options: ['21', '23', '29', '31'], answer: 0 }
         ]
       },
       {
@@ -28,7 +72,12 @@ const APTITUDE_MODULES = [
           { q: 'The product of three consecutive odd numbers is always divisible by:', options: ['3', '6', '9', '12'], answer: 0 },
           { q: 'How many 3-digit numbers are divisible by 7?', options: ['128', '129', '127', '130'], answer: 0 },
           { q: 'If n is an odd integer, which is always even?', options: ['n + 1', '2n + 1', 'n²', 'n³'], answer: 0 },
-          { q: 'The difference between a 2-digit number and its reverse is always divisible by:', options: ['3', '9', '11', '7'], answer: 1 }
+          { q: 'The difference between a 2-digit number and its reverse is always divisible by:', options: ['3', '9', '11', '7'], answer: 1 },
+          { q: 'A number is divisible by 9 if the sum of its digits is divisible by:', options: ['9', '3', '5', '7'], answer: 0 },
+          { q: 'How many odd numbers are between 1 and 20?', options: ['10', '9', '11', '12'], answer: 0 },
+          { q: 'Which is divisible by 6?', options: ['42', '44', '46', '40'], answer: 0 },
+          { q: 'If a number is divisible by 8, it is always divisible by:', options: ['4', '2', 'Both 4 and 2', 'Neither'], answer: 2 },
+          { q: 'The smallest 3-digit number divisible by 5 is:', options: ['100', '105', '110', '95'], answer: 0 }
         ]
       },
       {
@@ -39,7 +88,12 @@ const APTITUDE_MODULES = [
           { q: 'Which is NOT a perfect square?', options: ['1024', '1296', '1444', '1458'], answer: 3 },
           { q: 'What is the square of 35?', options: ['1125', '1225', '1325', '1025'], answer: 1 },
           { q: '√(0.0169) = ?', options: ['0.13', '0.013', '1.3', '0.0013'], answer: 0 },
-          { q: 'If x² = 289, what is x?', options: ['17', '19', '13', '23'], answer: 0 }
+          { q: 'If x² = 289, what is x?', options: ['17', '19', '13', '23'], answer: 0 },
+          { q: 'What is the cube root of 27?', options: ['3', '9', '6', '12'], answer: 0 },
+          { q: '√(625) is:', options: ['25', '35', '15', '45'], answer: 0 },
+          { q: 'Which is a perfect cube?', options: ['27', '25', '32', '30'], answer: 0 },
+          { q: 'Square of 99 is:', options: ['9801', '9901', '9799', '10001'], answer: 0 },
+          { q: '√(196) + √(225) = ?', options: ['29', '31', '27', '33'], answer: 0 }
         ]
       }
     ]
@@ -352,6 +406,7 @@ const Aptitude = ({ setCurrentPage }) => {
 
   const [selectedModule, setSelectedModule] = useState(null);
   const [selectedSubModule, setSelectedSubModule] = useState(null);
+  const [selectedGroup, setSelectedGroup] = useState(null);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
@@ -361,30 +416,36 @@ const Aptitude = ({ setCurrentPage }) => {
     addActivityLog(currentUser?.name || 'Student', 'student', 'APTITUDE_START', 'Opened Aptitude Assessment hub.');
   }, []);
 
+  const activeQuestions = selectedGroup ? selectedGroup.questions : (selectedSubModule?.questions || []);
+  const completionId = selectedGroup ? selectedGroup.id : (selectedSubModule?.id || '');
+
   const handleSelectAnswer = (qIdx, optIdx) => {
     if (submitted) return;
     setSelectedAnswers(prev => ({
       ...prev,
-      [`${selectedSubModule.id}-${qIdx}`]: optIdx
+      [`${completionId}-${qIdx}`]: optIdx
     }));
   };
 
   const handleSubmit = () => {
-    if (!selectedSubModule) return;
-    const questions = selectedSubModule.questions;
+    if (!activeQuestions.length) return;
     let correct = 0;
-    questions.forEach((q, idx) => {
-      const key = `${selectedSubModule.id}-${idx}`;
+    activeQuestions.forEach((q, idx) => {
+      const key = `${completionId}-${idx}`;
       if (selectedAnswers[key] === q.answer) correct++;
     });
-    const pct = Math.round((correct / questions.length) * 100);
+    const pct = Math.round((correct / activeQuestions.length) * 100);
     setScore(pct);
     setSubmitted(true);
-    saveAssessmentResult('aptitude', selectedSubModule.id, pct);
+    saveAssessmentResult('aptitude', completionId, pct);
   };
 
   const handleBackToModules = () => {
-    setSelectedSubModule(null);
+    if (selectedGroup) {
+      setSelectedGroup(null);
+    } else {
+      setSelectedSubModule(null);
+    }
     setCurrentIdx(0);
     setSelectedAnswers({});
     setSubmitted(false);
@@ -394,6 +455,15 @@ const Aptitude = ({ setCurrentPage }) => {
   const handleBackToTopics = () => {
     setSelectedModule(null);
     setSelectedSubModule(null);
+    setSelectedGroup(null);
+    setCurrentIdx(0);
+    setSelectedAnswers({});
+    setSubmitted(false);
+    setScore(null);
+  };
+
+  const handleBackToSubModules = () => {
+    setSelectedGroup(null);
     setCurrentIdx(0);
     setSelectedAnswers({});
     setSubmitted(false);
@@ -432,7 +502,10 @@ const Aptitude = ({ setCurrentPage }) => {
         </p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
           {APTITUDE_MODULES.map(mod => {
-            const completed = mod.subModules.every(sm => isModuleCompleted('aptitude', sm.id));
+            const completed = mod.subModules.every(sm => {
+              if (sm.groups) return sm.groups.every(g => isModuleCompleted('aptitude', g.id));
+              return isModuleCompleted('aptitude', sm.id);
+            });
             return (
               <div
                 key={mod.id}
@@ -463,6 +536,20 @@ const Aptitude = ({ setCurrentPage }) => {
     );
   }
 
+  const isSubModuleComplete = (sm) => {
+    if (sm.groups) {
+      return sm.groups.every(g => isModuleCompleted('aptitude', g.id));
+    }
+    return isModuleCompleted('aptitude', sm.id);
+  };
+
+  const subModuleQsCount = (sm) => {
+    if (sm.groups) {
+      return sm.groups.reduce((sum, g) => sum + g.questions.length, 0);
+    }
+    return sm.questions.length;
+  };
+
   // Sub-module selection view
   if (!selectedSubModule) {
     return (
@@ -482,7 +569,7 @@ const Aptitude = ({ setCurrentPage }) => {
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
           {selectedModule.subModules.map(sm => {
-            const done = isModuleCompleted('aptitude', sm.id);
+            const done = isSubModuleComplete(sm);
             return (
               <div
                 key={sm.id}
@@ -505,11 +592,67 @@ const Aptitude = ({ setCurrentPage }) => {
                       <CheckCircle size={14} /> Done
                     </span>
                   ) : (
-                    <span style={{ color: 'var(--secondary-cyan)', fontSize: '12px' }}>{sm.questions.length} Qs</span>
+                    <span style={{ color: 'var(--secondary-cyan)', fontSize: '12px' }}>{subModuleQsCount(sm)} Qs</span>
                   )}
                 </div>
                 <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>
-                  5 multiple choice questions • Score tracked
+                  {sm.groups ? `${sm.groups.length} modules • Score tracked` : '5 multiple choice questions • Score tracked'}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  // Group selection view (for sub-modules with groups)
+  if (selectedSubModule.groups && !selectedGroup) {
+    return (
+      <div>
+        <div className="page-header" style={{ marginBottom: '20px' }}>
+          <div>
+            <div className="cyber-badge" style={{ marginBottom: '8px' }}>
+              <Brain size={12} style={{ marginRight: '4px' }} /> {selectedModule.icon} {selectedModule.title}
+            </div>
+            <h1 className="page-title">
+              {selectedSubModule.title} <span>Modules</span>
+            </h1>
+          </div>
+          <button className="btn-cyber-outline" onClick={handleBackToModules} style={{ padding: '8px 16px', fontSize: '13px' }}>
+            <ArrowLeft size={14} /> Back to Sub-Modules
+          </button>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
+          {selectedSubModule.groups.map(g => {
+            const done = isModuleCompleted('aptitude', g.id);
+            return (
+              <div
+                key={g.id}
+                className="glass-panel"
+                style={{
+                  padding: '20px',
+                  borderTop: `3px solid ${done ? '#10b981' : 'var(--primary-blue)'}`,
+                  opacity: done ? 0.7 : 1,
+                  cursor: done ? 'default' : 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+                onClick={() => { if (!done) setSelectedGroup(g); }}
+                onMouseEnter={(e) => { if (!done) e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <h3 style={{ fontSize: '15px', fontWeight: '700' }}>{g.title}</h3>
+                  {done ? (
+                    <span style={{ color: '#10b981', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px' }}>
+                      <CheckCircle size={14} /> Done
+                    </span>
+                  ) : (
+                    <span style={{ color: 'var(--primary-blue)', fontSize: '12px' }}>{g.questions.length} Qs</span>
+                  )}
+                </div>
+                <p style={{ color: 'var(--text-muted)', fontSize: '12px' }}>
+                  5 multiple choice questions
                 </p>
               </div>
             );
@@ -520,22 +663,37 @@ const Aptitude = ({ setCurrentPage }) => {
   }
 
   // Question view
-  const questions = selectedSubModule.questions;
-  const currentQuestion = questions[currentIdx];
-  const progressPct = ((currentIdx + 1) / questions.length) * 100;
+  console.log('[Aptitude Debug]', {
+    selectedGroup: selectedGroup?.id,
+    selectedGroupTitle: selectedGroup?.title,
+    selectedSubModule: selectedSubModule?.id,
+    activeQuestionsCount: activeQuestions?.length,
+    hasQuestions: !!activeQuestions?.length,
+    currentIdx,
+    submitted
+  });
+
+  const currentQuestion = activeQuestions[currentIdx];
+  const progressPct = ((currentIdx + 1) / activeQuestions.length) * 100;
+
+  const headerTitle = selectedGroup ? selectedGroup.title : selectedSubModule.title;
+  const headerBadge = selectedGroup
+    ? `${selectedModule.title} / ${selectedSubModule.title} / ${selectedGroup.title}`
+    : `${selectedModule.title} / ${selectedSubModule.title}`;
+  const backHandler = selectedGroup ? handleBackToSubModules : handleBackToModules;
 
   return (
     <div>
       <div className="page-header" style={{ marginBottom: '16px' }}>
         <div>
           <div className="cyber-badge" style={{ marginBottom: '8px' }}>
-            <BookOpen size={12} style={{ marginRight: '4px' }} /> {selectedModule.title} / {selectedSubModule.title}
+            <BookOpen size={12} style={{ marginRight: '4px' }} /> {headerBadge}
           </div>
           <h1 className="page-title" style={{ fontSize: '22px' }}>
-            {selectedSubModule.title}
+            {headerTitle}
           </h1>
         </div>
-        <button className="btn-cyber-outline" onClick={handleBackToModules} style={{ padding: '8px 16px', fontSize: '13px' }}>
+        <button className="btn-cyber-outline" onClick={backHandler} style={{ padding: '8px 16px', fontSize: '13px' }}>
           <ArrowLeft size={14} /> Back
         </button>
       </div>
@@ -553,7 +711,7 @@ const Aptitude = ({ setCurrentPage }) => {
           </div>
           <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '8px' }}>Assessment Submitted!</h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '15px', marginBottom: '8px' }}>
-            {selectedSubModule.title} — {selectedModule.title}
+            {headerTitle} — {selectedModule.title}
           </p>
           <div style={{ fontSize: '42px', fontWeight: '800', color: score >= 60 ? '#10b981' : '#f59e0b', margin: '16px 0' }}>
             {score}%
@@ -562,8 +720,8 @@ const Aptitude = ({ setCurrentPage }) => {
             Score saved to your record. Points added to your profile.
           </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-            <button className="btn-cyber-outline" onClick={handleBackToModules} style={{ padding: '10px 20px' }}>
-              Back to Sub-Modules
+            <button className="btn-cyber-outline" onClick={backHandler} style={{ padding: '10px 20px' }}>
+              Back to {selectedGroup ? 'Modules' : 'Sub-Modules'}
             </button>
             <button className="btn-neon" onClick={handleBackToTopics} style={{ padding: '10px 20px' }}>
               Back to Module Selection
@@ -575,7 +733,7 @@ const Aptitude = ({ setCurrentPage }) => {
           <div style={{ marginBottom: '20px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: 'var(--text-muted)', marginBottom: '6px' }}>
               <span>Progress</span>
-              <span>Question {currentIdx + 1} of {questions.length}</span>
+              <span>Question {currentIdx + 1} of {activeQuestions.length}</span>
             </div>
             <div className="progress-track" style={{ height: '6px' }}>
               <div className="progress-bar-fill" style={{ width: `${progressPct}%`, background: 'var(--primary-blue)' }}></div>
@@ -590,7 +748,7 @@ const Aptitude = ({ setCurrentPage }) => {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '24px' }}>
             {currentQuestion.options.map((opt, oi) => {
-              const isSelected = selectedAnswers[`${selectedSubModule.id}-${currentIdx}`] === oi;
+              const isSelected = selectedAnswers[`${completionId}-${currentIdx}`] === oi;
               return (
                 <div
                   key={oi}
@@ -633,14 +791,14 @@ const Aptitude = ({ setCurrentPage }) => {
               <ChevronLeft size={16} /> Previous
             </button>
 
-            {currentIdx === questions.length - 1 ? (
+            {currentIdx === activeQuestions.length - 1 ? (
               <button className="btn-neon" onClick={handleSubmit} style={{ padding: '10px 24px', fontSize: '14px', background: 'linear-gradient(135deg, #10b981, #059669)' }}>
                 Submit Assessment <Send size={16} />
               </button>
             ) : (
               <button
                 className="btn-neon"
-                onClick={() => setCurrentIdx(prev => Math.min(questions.length - 1, prev + 1))}
+                onClick={() => setCurrentIdx(prev => Math.min(activeQuestions.length - 1, prev + 1))}
                 style={{ padding: '10px 24px', fontSize: '14px' }}
               >
                 Next <ChevronRight size={16} />
