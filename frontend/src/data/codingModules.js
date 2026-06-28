@@ -1,4 +1,4 @@
-const PYTHON_MODULES = [
+export const PYTHON_MODULES = [
   {
     id: 'variables-data-types',
     title: 'Variables and Data Types',
@@ -1203,7 +1203,7 @@ const PYTHON_MODULES = [
   }
 ];
 
-const JAVA_MODULES = [
+export const JAVA_MODULES = [
   {
     id: 'java-variables',
     title: 'Variables and Data Types',
@@ -2003,6 +2003,8 @@ const SQL_MODULES = [
     ]
   }
 ];
+export { SQL_MODULES };
+export { DSA_MODULES };
 
 export const CODING_LANGUAGES = [
   {
@@ -2019,7 +2021,7 @@ export const CODING_LANGUAGES = [
     icon: '☕',
     description: 'Java is a class-based, object-oriented language designed for portability. Learn Java syntax, OOP concepts, control flow, and exception handling.',
     color: '#ED8B00',
-    modules: PYTHON_MODULES
+    modules: JAVA_MODULES
   },
   {
     id: 'sql',

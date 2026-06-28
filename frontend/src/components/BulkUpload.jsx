@@ -2,6 +2,11 @@ import React, { useState, useContext } from 'react';
 import { AssessmentContext, API_BASE_URL } from '../context/AssessmentContext';
 import { Upload, FileText, CheckCircle, AlertCircle, X, HelpCircle, Code2 } from 'lucide-react';
 import './BulkUpload.css';
+import { CODING_TOPICS } from '../pages/CodingMCQ';
+import { DB_MODULES } from '../pages/DatabaseSQL';
+import { CF_MODULES } from '../pages/ComputerFundamentals';
+import { PYTHON_MODULES, JAVA_MODULES, SQL_MODULES, DSA_MODULES } from '../data/codingModules';
+import { APTITUDE_MODULES } from '../data/aptitudeModules';
 
 const BulkUpload = ({ onComplete }) => {
   const { isOnline, addActivityLog } = useContext(AssessmentContext);
@@ -13,6 +18,13 @@ const BulkUpload = ({ onComplete }) => {
   const [message, setMessage] = useState('');
   const [results, setResults] = useState(null);
   const [assessmentId, setAssessmentId] = useState('ASM001');
+
+  // New state for subject and module selection
+  const [subject, setSubject] = useState('');
+  const [moduleOptions, setModuleOptions] = useState([]);
+  const [selectedModule, setSelectedModule] = useState(null);
+  // Selected language for coding questions
+  const [language, setLanguage] = useState('');
 
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
@@ -197,6 +209,14 @@ const BulkUpload = ({ onComplete }) => {
       return;
     }
 
+    // Attach selected module to each question for MCQ uploads
+    if (uploadType === 'mcq' && selectedModule) {
+      questions = questions.map(q => ({ ...q, module: selectedModule.id }));
+    }
+    if (uploadType === 'coding' && selectedModule) {
+      questions = questions.map(q => ({ ...q, module: selectedModule.id, language }));
+    }
+
     setStatus('loading');
     setMessage(`Uploading ${validation.count} ${uploadType.toUpperCase()} entries...`);
 
@@ -270,19 +290,105 @@ const BulkUpload = ({ onComplete }) => {
       <div style={{ marginBottom: '16px', display: 'flex', gap: '12px' }}>
         <button
           className={`bulk-mode-btn ${uploadType === 'mcq' ? 'active' : ''}`}
-          onClick={() => { setUploadType('mcq'); resetForm(); }}
+          onClick={() => { setUploadType('mcq'); resetForm(); setSubject(''); setLanguage(''); setModuleOptions([]); setSelectedModule(null); }}
           style={{ flexGrow: 1, justifyContent: 'center' }}
         >
           <HelpCircle size={14} /> MCQ Questions
         </button>
         <button
           className={`bulk-mode-btn ${uploadType === 'coding' ? 'active' : ''}`}
-          onClick={() => { setUploadType('coding'); resetForm(); }}
+          onClick={() => { setUploadType('coding'); resetForm(); setSubject(''); setLanguage(''); setModuleOptions([]); setSelectedModule(null); }}
           style={{ flexGrow: 1, justifyContent: 'center' }}
         >
           <Code2 size={14} /> Coding Tasks
         </button>
       </div>
+
+      {/* Subject and Module Dropdowns */}
+      {uploadType && (
+        <div style={{ marginBottom: '16px' }}>
+          <label className="cyber-label">Subject (Category)</label>
+          <select
+            className="cyber-input"
+            value={subject}
+            onChange={(e) => {
+              const sel = e.target.value;
+              setSubject(sel);
+              setLanguage('');
+              // Populate module options based on subject
+              let modules = [];
+              if (sel === 'Aptitude') modules = APTITUDE_MODULES;
+              else if (sel === 'Coding MCQ') modules = []; // will be set via language selection
+              else if (sel === 'Database & SQL') modules = DB_MODULES;
+              else if (sel === 'Computer Fundamentals') modules = CF_MODULES;
+              setModuleOptions(modules);
+              setSelectedModule(null);
+            }}
+          >
+            <option value="">Select Subject</option>
+            <option value="Aptitude">Aptitude</option>
+            <option value="Coding MCQ">Coding MCQ</option>
+            <option value="Database & SQL">Database & SQL</option>
+            <option value="Computer Fundamentals">Computer Fundamentals</option>
+          </select>
+          {uploadType === 'coding' && subject === 'Coding MCQ' && (
+            <>
+              <label className="cyber-label" style={{ marginTop: '8px' }}>Select Language</label>
+              <select
+                className="cyber-input"
+                value={language}
+                onChange={(e) => {
+                  const lang = e.target.value;
+                  setLanguage(lang);
+                  let mods = [];
+                  switch (lang) {
+                    case 'python':
+                      mods = PYTHON_MODULES;
+                      break;
+                    case 'java':
+                      mods = JAVA_MODULES;
+                      break;
+                    case 'sql':
+                      mods = SQL_MODULES;
+                      break;
+                    case 'dsa':
+                      mods = DSA_MODULES;
+                      break;
+                    default:
+                      mods = [];
+                  }
+                  setModuleOptions(mods);
+                  setSelectedModule(null);
+                }}
+              >
+                <option value="">Select Language</option>
+                <option value="python">Python ({PYTHON_MODULES.length} modules)</option>
+                <option value="java">Java ({JAVA_MODULES.length} modules)</option>
+                <option value="sql">SQL ({SQL_MODULES.length} modules)</option>
+                <option value="dsa">DSA ({DSA_MODULES.length} modules)</option>
+              </select>
+            </>
+          )}
+          {moduleOptions.length > 0 && (
+            <>
+              <label className="cyber-label" style={{ marginTop: '8px' }}>Module</label>
+              <select
+                className="cyber-input"
+                value={selectedModule ? selectedModule.id : ''}
+                onChange={(e) => {
+                  const mod = moduleOptions.find(m => m.id === e.target.value);
+                  setSelectedModule(mod);
+                }}
+              >
+                <option value="">Select Module</option>
+                {moduleOptions.map(mod => (
+                  <option key={mod.id} value={mod.id}>{mod.title}</option>
+                ))}
+              </select>
+            </>
+          )}
+        </div>
+      )}
 
       {/* Mode selectors */}
       <div style={{ marginBottom: '16px', display: 'flex', gap: '12px' }}>

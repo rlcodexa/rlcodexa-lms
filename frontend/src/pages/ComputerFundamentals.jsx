@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { AssessmentContext } from '../context/AssessmentContext';
 import { ChevronLeft, ChevronRight, Send, CheckCircle, Monitor, BookOpen, ArrowLeft } from 'lucide-react';
 
-const CF_MODULES = [
+export const CF_MODULES = [
   {
     id: 'computer-hardware',
     title: 'Computer Hardware',

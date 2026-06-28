@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { AssessmentContext } from '../context/AssessmentContext';
 import { ChevronLeft, ChevronRight, Send, CheckCircle, Code2, BookOpen, ArrowLeft } from 'lucide-react';
 
-const CODING_TOPICS = [
+export const CODING_TOPICS = [
   {
     id: 'data-structures',
     title: 'Data Structures',

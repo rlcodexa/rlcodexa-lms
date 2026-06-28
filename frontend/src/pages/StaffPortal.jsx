@@ -4,9 +4,23 @@ import BulkUpload from '../components/BulkUpload';
 import { Users, Plus, FileText, ClipboardList, Code2, CheckCircle2, Upload, BookOpen, HelpCircle } from 'lucide-react';
 
 const StaffPortal = ({ mode }) => {
-  const { students, departments, isOnline } = useContext(AssessmentContext);
+  const { students, departments, isOnline, currentUser } = useContext(AssessmentContext);
   const [activeTab, setActiveTab] = useState(mode || 'directory');
-  const [selectedDept, setSelectedDept] = useState(departments[0]);
+  const [selectedDept, setSelectedDept] = useState(
+    currentUser?.department || (departments[0]?.departmentName || '')
+  );
+
+  // Sync selectedDept if it is empty and departments loads
+  useEffect(() => {
+    if (!selectedDept && departments && departments.length > 0) {
+      const trainerDept = currentUser?.department;
+      if (trainerDept && departments.some(d => d.departmentName === trainerDept)) {
+        setSelectedDept(trainerDept);
+      } else {
+        setSelectedDept(departments[0].departmentName);
+      }
+    }
+  }, [departments, currentUser, selectedDept]);
 
   // Sync activeTab when mode changes from sidebar/dashboard clicks
   useEffect(() => {
@@ -230,7 +244,7 @@ const StaffPortal = ({ mode }) => {
           style={{ width: '260px' }}
         >
           {departments.map((d, i) => (
-            <option key={i} value={d}>{d}</option>
+            <option key={i} value={d.departmentName}>{d.departmentName}</option>
           ))}
         </select>
       </div>
