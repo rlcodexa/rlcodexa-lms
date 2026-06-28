@@ -164,9 +164,9 @@ const Coding = ({ setCurrentPage }) => {
       2: WEEKLY_QUESTIONS[2].templates[lang]
     });
     setTestStatus({
-      0: { hasRun: false, passed: 0, logs: `Language switched to ${lang.toUpperCase()}. Code sandbox reset.` },
-      1: { hasRun: false, passed: 0, logs: `Language switched to ${lang.toUpperCase()}. Code sandbox reset.` },
-      2: { hasRun: false, passed: 0, logs: `Language switched to ${lang.toUpperCase()}. Code sandbox reset.` }
+      0: { hasRun: false, passed: 0, logs: `Language switched to ${lang.toUpperCase()}. Code arena reset.` },
+      1: { hasRun: false, passed: 0, logs: `Language switched to ${lang.toUpperCase()}. Code arena reset.` },
+      2: { hasRun: false, passed: 0, logs: `Language switched to ${lang.toUpperCase()}. Code arena reset.` }
     });
   };
 
@@ -273,7 +273,7 @@ const Coding = ({ setCurrentPage }) => {
       </div>
 
       {/* Multi-question workspace layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: '20px', flexGrow: 1, height: 'calc(100% - 75px)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr', gap: '20px', flexGrow: 1, height: 'calc(100% - 75px)' }}>
         
         {/* Left selector sidebar */}
         <div className="glass-panel" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -320,7 +320,7 @@ const Coding = ({ setCurrentPage }) => {
         </div>
 
         {/* Right workspace: Split prompt & IDE */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1.2fr', gap: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '0.8fr 2fr', gap: '20px' }}>
           
           {/* Question Prompt */}
           <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto' }}>
@@ -386,7 +386,7 @@ const Coding = ({ setCurrentPage }) => {
             {/* Console Log Terminal */}
             <div className="console-area" style={{ height: '160px', flexShrink: 0 }}>
               <div className="console-title-bar">
-                <span>Compiler Sandbox Output Logs</span>
+                <span>Compiler Arena Output Logs</span>
                 {activeStatus.hasRun && (
                   <span style={{ color: activeStatus.passed === 3 ? '#10b981' : '#f59e0b', fontWeight: 'bold' }}>
                     {activeStatus.passed}/3 Passed

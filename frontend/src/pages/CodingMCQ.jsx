@@ -363,6 +363,9 @@ const CodingMCQ = ({ setCurrentPage }) => {
   if (!selectedTopic) {
     return (
       <div>
+        <button className="btn-cyber-outline" onClick={handleBackToTopics} style={{ marginBottom: '16px',  padding: '8px 16px', fontSize: '13px' }}>
+            <ArrowLeft size={14} /> Back to Topics
+          </button>
         <div className="page-header" style={{ marginBottom: '20px' }}>
           <div>
             <div className="cyber-badge" style={{ marginBottom: '8px' }}>
@@ -422,9 +425,6 @@ const CodingMCQ = ({ setCurrentPage }) => {
               {selectedTopic.title} <span>Sub-Modules</span>
             </h1>
           </div>
-          <button className="btn-cyber-outline" onClick={handleBackToTopics} style={{ padding: '8px 16px', fontSize: '13px' }}>
-            <ArrowLeft size={14} /> Back to Topics
-          </button>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
           {selectedTopic.subModules.map(sm => {
@@ -472,8 +472,11 @@ const CodingMCQ = ({ setCurrentPage }) => {
 
   return (
     <div>
-      <div className="page-header" style={{ marginBottom: '16px' }}>
-        <div>
+      <button className="btn-cyber-outline" onClick={handleBackToModules} style={{ marginBottom: '16px',  padding: '8px 16px', fontSize: '13px' }}>
+          <ArrowLeft size={14} /> Back
+        </button>
+        <div className="page-header" style={{ marginBottom: '16px' }}>
+          <div>
           <div className="cyber-badge" style={{ marginBottom: '8px' }}>
             <BookOpen size={12} style={{ marginRight: '4px' }} /> {selectedTopic.title} / {selectedSubModule.title}
           </div>
@@ -481,10 +484,7 @@ const CodingMCQ = ({ setCurrentPage }) => {
             {selectedSubModule.title}
           </h1>
         </div>
-        <button className="btn-cyber-outline" onClick={handleBackToModules} style={{ padding: '8px 16px', fontSize: '13px' }}>
-          <ArrowLeft size={14} /> Back
-        </button>
-      </div>
+        </div>
 
       {submitted ? (
         <div className="glass-panel" style={{ padding: '40px', textAlign: 'center' }}>

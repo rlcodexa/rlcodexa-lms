@@ -1,9 +1,9 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { AssessmentContext } from '../context/AssessmentContext';
-import { ShieldAlert, Cpu, Terminal, Key, Users, Award, Shield } from 'lucide-react';
+import { ShieldAlert, Key, Users, Award, Lock, Mail, ArrowRight, Sparkles } from 'lucide-react';
 
 const Login = ({ setCurrentPage }) => {
-  const { loginStudent, students, addActivityLog } = useContext(AssessmentContext);
+  const { loginStudent } = useContext(AssessmentContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('student');
@@ -22,7 +22,7 @@ const Login = ({ setCurrentPage }) => {
     const res = loginStudent(email.trim(), password, role);
 
     if (res.success) {
-      if (role === 'student' && res.rewardAdded) {
+      if (res.rewardAdded) {
         setStreakPopup(true);
         setTimeout(() => {
           setStreakPopup(false);
@@ -36,215 +36,172 @@ const Login = ({ setCurrentPage }) => {
     }
   };
 
-  // Find a registered student for quick demo filling
-  const demoStudent = students.find(s => s.registered) || { email: "aarav.sharma@codegate.edu", name: "Aarav" };
-
   return (
-    <div className="auth-container">
+    <div className="auth-container" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'radial-gradient(circle at top right, #020817, #000000)', position: 'relative', overflow: 'hidden' }}>
+      {/* Background glowing effects */}
+      <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '40vw', height: '40vw', background: 'radial-gradient(circle, rgba(0,191,255,0.15) 0%, transparent 60%)', filter: 'blur(60px)', zIndex: 0 }}></div>
+      <div style={{ position: 'absolute', bottom: '-10%', right: '-10%', width: '40vw', height: '40vw', background: 'radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 60%)', filter: 'blur(60px)', zIndex: 0 }}></div>
+
       {/* Daily streak notification */}
       {streakPopup && (
-        <div className="security-alert-overlay">
-          <div className="security-alert-box" style={{ borderColor: 'var(--primary-blue)', boxShadow: 'var(--glow-shadow-intense)' }}>
+        <div className="security-alert-overlay" style={{ zIndex: 100 }}>
+          <div className="security-alert-box" style={{ borderColor: 'var(--primary-blue)', boxShadow: 'var(--glow-shadow-intense)', background: 'rgba(15, 23, 42, 0.95)', backdropFilter: 'blur(20px)' }}>
             <div style={{ color: 'var(--primary-blue)', marginBottom: '15px' }}><Award size={64} /></div>
-            <h2 className="security-alert-title">DAILY LOG STREAK!</h2>
+            <h2 className="security-alert-title" style={{ fontSize: '24px', letterSpacing: '2px' }}>DAILY LOG STREAK!</h2>
             <p className="security-alert-text" style={{ fontSize: '16px', color: '#fff' }}>
-              Daily login verification logged successfully.
+              Authentication successful. Welcome back!
             </p>
-            <div style={{ fontSize: '28px', fontWeight: 'bold', color: 'var(--secondary-cyan)', margin: '15px 0' }}>
+            <div style={{ fontSize: '32px', fontWeight: '800', color: 'var(--secondary-cyan)', margin: '20px 0', textShadow: '0 0 20px rgba(6, 182, 212, 0.5)' }}>
               +20 Points Added!
             </div>
             <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
-              Syncing level indicators with security protocol...
+              Syncing level indicators...
             </p>
           </div>
         </div>
       )}
 
-      {/* Side Illustration Panel */}
-      <div className="auth-hero-panel">
-        <div style={{ position: 'absolute', top: '24px', left: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: 'linear-gradient(135deg, var(--primary-blue), var(--secondary-cyan))' }}></div>
-          <span style={{ fontSize: '18px', fontWeight: '800', tracking: '1px' }}>CODEGATE</span>
-        </div>
+      {/* Main Login Card */}
+      <div style={{ display: 'flex', width: '1000px', height: '600px', background: 'rgba(15, 23, 42, 0.4)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)', overflow: 'hidden', backdropFilter: 'blur(20px)', zIndex: 10 }}>
 
-        <div style={{ textAlign: 'center', maxWidth: '400px', margin: 'auto 0' }}>
-          {/* Cyber Vector Circle Illustration */}
-          <div className="glow-vector" style={{ marginBottom: '30px' }}>
-            <div className="vector-circle-outer"></div>
-            <div className="vector-circle-inner" style={{ borderStyle: 'dotted' }}></div>
-            <div className="vector-core" style={{ background: 'radial-gradient(circle, var(--secondary-cyan) 0%, transparent 70%)', boxShadow: '0 0 30px var(--secondary-cyan)' }}>
-              <Key size={40} color="#000" />
+        {/* Left Side: Brand & Visuals */}
+        <div style={{ flex: '1', padding: '50px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderRight: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(135deg, rgba(0,191,255,0.05) 0%, transparent 100%)', zIndex: 0 }}></div>
+
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '40px' }}>
+              <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'linear-gradient(135deg, #00BFFF, #06B6D4)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(0,191,255,0.4)' }}>
+                <Key size={18} color="#000" />
+              </div>
+              <span style={{ fontSize: '24px', fontWeight: '800', letterSpacing: '2px', color: '#fff' }}>CODEGATE</span>
             </div>
-            <div style={{ position: 'absolute', top: '25%', right: '5%', color: 'var(--primary-blue)', fontSize: '11px', fontFamily: 'var(--font-code)' }}>GATE_ACTIVE</div>
-            <div style={{ position: 'absolute', bottom: '25%', left: '5%', color: 'var(--secondary-cyan)', fontSize: '11px', fontFamily: 'var(--font-code)' }}>SECURE_SSL</div>
+
+            <h1 style={{ fontSize: '42px', fontWeight: '800', lineHeight: '1.2', marginBottom: '20px', background: 'linear-gradient(to right, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              Unlock Your<br />Coding Potential.
+            </h1>
+            <p style={{ color: 'var(--text-muted)', fontSize: '16px', lineHeight: '1.6', maxWidth: '80%' }}>
+              Join the elite assessment platform. Practice, compete, and climb the leaderboard to prove your skills.
+            </p>
           </div>
 
-          <h2 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '15px', color: '#fff' }}>
-            College Secure Portal
-          </h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '15px', lineHeight: '1.6', marginBottom: '25px' }}>
-            Select your academic role and supply credentials. Integrity and activity metrics are monitored in real time.
-          </p>
-
-          {/* Quick Demo Selector */}
-          <div className="glass-panel" style={{ padding: '16px', background: 'rgba(0, 191, 255, 0.03)', borderColor: 'var(--border-color)', textAlign: 'left' }}>
-            <div style={{ fontSize: '12px', fontWeight: 'bold', color: 'var(--primary-blue)', textTransform: 'uppercase', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Terminal size={14} /> PRESENTATION QUICK-LOGINS (Click to fill)
+          <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: '15px' }}>
+            <div style={{ display: 'flex', WebkitBoxReflect: 'below 0px linear-gradient(transparent, transparent, rgba(0,0,0,0.2))' }}>
+              <Users size={24} color="var(--primary-blue)" />
             </div>
-            
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-              <button 
-                onClick={() => {
-                  setRole('student');
-                  setEmail(demoStudent.email);
-                  setPassword('password123');
-                }}
-                style={{
-                  background: 'rgba(15, 23, 42, 0.8)', border: '1px solid var(--border-color)', borderRadius: '6px',
-                  color: '#fff', fontSize: '11px', padding: '8px', cursor: 'pointer', textAlign: 'left', display: 'flex', gap: '6px', alignItems: 'center'
-                }}
-              >
-                <Users size={12} color="var(--primary-blue)" /> Student (Aarav)
-              </button>
-              <button 
-                onClick={() => {
-                  setRole('staff');
-                  setEmail('staff@codegate.edu');
-                  setPassword('staff123');
-                }}
-                style={{
-                  background: 'rgba(15, 23, 42, 0.8)', border: '1px solid var(--border-color)', borderRadius: '6px',
-                  color: '#fff', fontSize: '11px', padding: '8px', cursor: 'pointer', textAlign: 'left', display: 'flex', gap: '6px', alignItems: 'center'
-                }}
-              >
-                <Award size={12} color="#f59e0b" /> Staff (Instructor)
-              </button>
-              <button 
-                onClick={() => {
-                  setRole('hod');
-                  setEmail('hod.cse@codegate.edu');
-                  setPassword('hod123');
-                }}
-                style={{
-                  background: 'rgba(15, 23, 42, 0.8)', border: '1px solid var(--border-color)', borderRadius: '6px',
-                  color: '#fff', fontSize: '11px', padding: '8px', cursor: 'pointer', textAlign: 'left', display: 'flex', gap: '6px', alignItems: 'center'
-                }}
-              >
-                <Cpu size={12} color="#10b981" /> HOD (Dept Head)
-              </button>
-              <button 
-                onClick={() => {
-                  setRole('admin');
-                  setEmail('admin@codegate.edu');
-                  setPassword('admin123');
-                }}
-                style={{
-                  background: 'rgba(15, 23, 42, 0.8)', border: '1px solid var(--border-color)', borderRadius: '6px',
-                  color: '#fff', fontSize: '11px', padding: '8px', cursor: 'pointer', textAlign: 'left', display: 'flex', gap: '6px', alignItems: 'center'
-                }}
-              >
-                <Shield size={12} color="#ef4444" /> Admin (College Control)
-              </button>
+            <div>
+              <div style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>Over 10,000+ Students</div>
+              <div style={{ color: 'var(--text-muted)', fontSize: '12px' }}>Actively learning & coding</div>
             </div>
           </div>
         </div>
 
-        <div style={{ position: 'absolute', bottom: '24px', color: 'var(--text-muted)', fontSize: '12px' }}>
-          CodeGate Security System © 2026. Whitelist restricted.
-        </div>
-      </div>
-
-      {/* Login Form Panel */}
-      <div className="auth-panel">
-        <div style={{ maxWidth: '400px', width: '100%', margin: '0 auto' }}>
-          <div className="cyber-badge" style={{ marginBottom: '15px' }}>
-            Authorization Shield
+        {/* Right Side: Login Form */}
+        <div style={{ flex: '1', padding: '50px 60px', display: 'flex', flexDirection: 'column', justifyContent: 'center', background: 'rgba(2, 8, 23, 0.4)' }}>
+          <div style={{ marginBottom: '40px' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: 'rgba(0,191,255,0.1)', borderRadius: '20px', border: '1px solid rgba(0,191,255,0.2)', color: 'var(--primary-blue)', fontSize: '12px', fontWeight: '600', marginBottom: '20px' }}>
+              <Sparkles size={14} /> Student Portal
+            </div>
+            <h2 style={{ fontSize: '32px', fontWeight: '800', color: '#fff', marginBottom: '10px' }}>Welcome Back</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '15px' }}>Enter your institutional credentials to access your dashboard.</p>
           </div>
-          <h2 style={{ fontSize: '30px', fontWeight: '800', marginBottom: '10px' }}>
-            Portal Gateway
-          </h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '30px' }}>
-            Select your portal type and provide credentials to authenticate.
-          </p>
 
           {error && (
-            <div className="glass-panel" style={{ padding: '12px 16px', background: 'rgba(239, 68, 68, 0.05)', borderColor: 'rgba(239, 68, 68, 0.3)', color: '#ef4444', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-              <ShieldAlert size={16} style={{ flexShrink: 0 }} />
+            <div style={{ padding: '14px 16px', background: 'rgba(239, 68, 68, 0.1)', borderLeft: '4px solid #ef4444', borderRadius: '4px', color: '#ef4444', fontSize: '14px', display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '25px', animation: 'fadeIn 0.3s ease' }}>
+              <ShieldAlert size={18} />
               <div>{error}</div>
             </div>
           )}
 
-          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div>
-              <label className="cyber-label">Select Workspace Role</label>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                {['student', 'staff', 'hod', 'admin'].map((r) => (
+              <label style={{ display: 'block', color: '#fff', fontSize: '13px', fontWeight: '600', marginBottom: '8px', letterSpacing: '0.5px' }}>Login As</label>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                {['student', 'assessment', 'staff', 'hod', 'admin'].map((r) => (
                   <button
                     key={r}
                     type="button"
-                    onClick={() => {
-                      setRole(r);
-                      setError('');
-                    }}
+                    onClick={() => setRole(r)}
                     style={{
                       flex: 1,
-                      padding: '8px',
-                      background: role === r ? 'rgba(0, 191, 255, 0.1)' : 'rgba(15, 23, 42, 0.5)',
-                      border: '1px solid',
-                      borderColor: role === r ? 'var(--primary-blue)' : 'var(--border-color)',
-                      borderRadius: '6px',
+                      padding: '10px',
+                      background: role === r ? 'rgba(0,191,255,0.2)' : 'rgba(15, 23, 42, 0.6)',
+                      border: `1px solid ${role === r ? 'var(--primary-blue)' : 'rgba(255,255,255,0.1)'}`,
+                      borderRadius: '8px',
                       color: role === r ? '#fff' : 'var(--text-muted)',
                       fontSize: '11px',
-                      fontWeight: 'bold',
-                      textTransform: 'uppercase',
+                      fontWeight: '600',
+                      textTransform: 'capitalize',
                       cursor: 'pointer',
-                      transition: 'all 0.2s ease'
+                      transition: 'all 0.2s ease',
+                      whiteSpace: 'nowrap'
                     }}
                   >
-                    {r}
+                    {r === 'staff' ? 'Trainer' : r === 'hod' ? 'HOD' : r === 'assessment' ? 'Test Mode' : r}
                   </button>
                 ))}
               </div>
             </div>
 
             <div>
-              <label className="cyber-label">Institutional Email</label>
-              <input
-                type="email"
-                placeholder="name@codegate.edu"
-                className="cyber-input"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <label style={{ display: 'block', color: '#fff', fontSize: '13px', fontWeight: '600', marginBottom: '8px', letterSpacing: '0.5px' }}>Email Address</label>
+              <div style={{ position: 'relative' }}>
+                <div style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
+                  <Mail size={18} />
+                </div>
+                <input
+                  type="email"
+                  placeholder="name@codegate.edu"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  style={{ width: '100%', padding: '14px 16px 14px 44px', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', fontSize: '15px', outline: 'none', transition: 'all 0.3s ease' }}
+                  onFocus={(e) => e.target.style.borderColor = 'var(--primary-blue)'}
+                  onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                />
+              </div>
             </div>
 
             <div>
-              <label className="cyber-label">Password</label>
-              <input
-                type="password"
-                placeholder="••••••••"
-                className="cyber-input"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <label style={{ color: '#fff', fontSize: '13px', fontWeight: '600', letterSpacing: '0.5px' }}>Password</label>
+                <button type="button" onClick={() => alert("Password reset link has been sent to your email.")} style={{ background: 'none', border: 'none', color: 'var(--primary-blue)', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}>
+                  Forgot Password?
+                </button>
+              </div>
+              <div style={{ position: 'relative' }}>
+                <div style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
+                  <Lock size={18} />
+                </div>
+                <input
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  style={{ width: '100%', padding: '14px 16px 14px 44px', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', fontSize: '15px', outline: 'none', transition: 'all 0.3s ease', letterSpacing: password ? '4px' : 'normal' }}
+                  onFocus={(e) => e.target.style.borderColor = 'var(--primary-blue)'}
+                  onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                />
+              </div>
             </div>
 
-            <button type="submit" className="btn-neon" style={{ width: '100%', marginTop: '10px' }}>
-              Authenticate Terminal
+            <button type="submit" style={{ marginTop: '10px', padding: '16px', background: 'linear-gradient(135deg, var(--primary-blue), var(--secondary-cyan))', border: 'none', borderRadius: '12px', color: '#000', fontSize: '16px', fontWeight: '700', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', transition: 'all 0.3s ease', boxShadow: '0 10px 25px -5px rgba(0, 191, 255, 0.4)' }}
+              onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+              onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+            >
+              Sign In to Portal <ArrowRight size={18} />
             </button>
           </form>
 
-          {role === 'student' && (
-            <p style={{ textAlign: 'center', marginTop: '24px', color: 'var(--text-muted)', fontSize: '14px' }}>
-              First time logging in or not registered yet?{' '}
-              <button 
-                onClick={() => setCurrentPage('register')} 
-                style={{ background: 'none', border: 'none', color: 'var(--primary-blue)', fontWeight: '600', cursor: 'pointer', fontFamily: 'var(--font-cyber)' }}
-              >
-                Verify Whitelist
-              </button>
-            </p>
-          )}
+          <p style={{ textAlign: 'center', marginTop: '30px', color: 'var(--text-muted)', fontSize: '14px' }}>
+            Don't have an account?{' '}
+            <button
+              onClick={() => setCurrentPage('register')}
+              style={{ background: 'none', border: 'none', color: '#fff', fontWeight: '700', cursor: 'pointer', transition: 'color 0.2s' }}
+              onMouseOver={(e) => e.target.style.color = 'var(--primary-blue)'}
+              onMouseOut={(e) => e.target.style.color = '#fff'}
+            >
+              Create Account
+            </button>
+          </p>
         </div>
       </div>
     </div>

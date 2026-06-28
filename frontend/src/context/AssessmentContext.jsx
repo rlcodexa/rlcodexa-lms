@@ -1,8 +1,9 @@
 import React, { createContext, useState, useEffect } from 'react';
+import confetti from 'canvas-confetti';
 
 export const API_BASE_URL = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
   ? 'http://localhost:5000/api'
-  : 'https://rlcodexabackend-1.onrender.com/api';
+  : 'https://rlcodexabackendlast.onrender.com/api';
 
 export const AssessmentContext = createContext();
 
@@ -12,143 +13,55 @@ const DEPARTMENTS = [
   "Artificial Intelligence & Data Science",
   "Electronics & Communication Engineering",
   "BCA"
-];
-
-// Seed whitelisted 50 students (fallback data)
-const INITIAL_STUDENT_WHITELIST = [];
-const firstNames = ["Aarav", "Aditi", "Vikram", "Kavya", "Rahul", "Priyanka", "Sanjay", "Meera", "Rohan", "Sneha", "Arjun", "Divya", "Kartik", "Ananya", "Varun", "Shruti", "Siddharth", "Neha", "Manoj", "Deepa", "Harish", "Shweta", "Alok", "Riya", "Nikhil", "Tanu", "Pavan", "Kriti", "Vivek", "Pooja", "Aakash", "Ishani", "Raman", "Komal", "Dev", "Swati", "Raj", "Nisha", "Gaurav", "Preeti", "Rishi", "Anjali", "Suresh", "Ritu", "Amit", "Kiran", "Vijay", "Jyoti", "Pranav", "Megha"];
-const lastNames = ["Sharma", "Patel", "Singh", "Nair", "Verma", "Rao", "Gupta", "Krishnan", "Das", "Reddy", "Bose", "Joshi", "Iyer", "Sen", "Malhotra", "Mishra", "Pillai", "Balan", "Choudhury", "Nair", "Das", "Roy", "Prasad", "Menon", "Jha", "Pandey", "Saxena", "Trivedi", "Kapoor", "Bhatt", "Dubey", "Grover", "Mehta", "Deshmukh", "Kulkarni", "Joshi", "Pillai", "Shetty", "Rao", "Nair", "Iyer", "Verma"];
-
-for (let i = 1; i <= 50; i++) {
-  const fIdx = (i - 1) % firstNames.length;
-  const lIdx = (i - 1) % lastNames.length;
-  const deptIdx = (i - 1) % DEPARTMENTS.length;
-  const name = `${firstNames[fIdx]} ${lastNames[lIdx]}`;
-  const id = `CG-2026-${i < 10 ? '0' + i : i}`;
-  const email = `${firstNames[fIdx].toLowerCase()}.${lastNames[lIdx].toLowerCase()}@codegate.edu`;
-
-  const isRegistered = i > 1 && i <= 10;
-  const isCompleted = isRegistered && i % 2 === 0;
-
-  let points = 0;
-  let quizScore = 0;
-  let codingScore = 0;
-  let completedQuiz = false;
-  let completedCoding = false;
-  let infractionCount = 0;
-  let infractionLogs = [];
-
-  if (isRegistered) {
-    points = 40 + (i * 15) % 120;
-    if (isCompleted) {
-      completedQuiz = true;
-      completedCoding = true;
-      quizScore = 70 + (i * 4) % 31;
-      codingScore = i % 3 === 0 ? 100 : (i % 3 === 1 ? 66 : 33);
-      points += quizScore + codingScore;
-      infractionCount = i % 4 === 0 ? 1 : 0;
-      if (infractionCount > 0) {
-        infractionLogs.push({ time: "11:20", type: "Tab Switch", desc: "Switched tab during coding test" });
-      }
-    }
+]; const playSuccessSound = () => {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const playNote = (frequency, startTime, duration) => {
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      oscillator.type = 'sine';
+      oscillator.frequency.value = frequency;
+      gainNode.gain.setValueAtTime(0.08, startTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      oscillator.start(startTime);
+      oscillator.stop(startTime + duration);
+    };
+    playNote(523.25, audioCtx.currentTime, 0.15);
+    playNote(659.25, audioCtx.currentTime + 0.1, 0.15);
+    playNote(783.99, audioCtx.currentTime + 0.2, 0.4);
+  } catch (e) {
+    console.error("Audio Context error:", e);
   }
-
-  INITIAL_STUDENT_WHITELIST.push({
-    id,
-    name,
-    email,
-    department: DEPARTMENTS[deptIdx],
-    registered: isRegistered,
-    password: isRegistered ? "password123" : "",
-    completedQuiz,
-    quizScore,
-    completedCoding,
-    codingScore,
-    testCasesPassed: isCompleted ? (codingScore === 100 ? 3 : (codingScore === 66 ? 2 : 1)) : 0,
-    points,
-    level: "Novice",
-    dailyStreakBonusAdded: false,
-    infractionCount,
-    infractionLogs,
-    loginLogs: isRegistered ? [`2026-06-15 09:${30 + i}:02 - Session Authenticated`] : [],
-    weeklyCertIssued: isCompleted && (quizScore + codingScore > 140)
-  });
-}
-
-const ROLES_DATABASE = {
-  admin: { email: "admin@codegate.edu", name: "Dr. Alok Sen (Admin Controller)", password: "admin123", role: "admin" },
-  staff: { email: "staff@codegate.edu", name: "Prof. Tanu Mishra (Course Instructor)", password: "staff123", role: "staff", department: "Computer Science & Engineering" },
-  hod: { email: "hod.cse@codegate.edu", name: "Dr. Raman Saxena (CSE Department HOD)", password: "hod123", role: "hod", department: "Computer Science & Engineering" }
 };
-
 export const AssessmentProvider = ({ children }) => {
   const [isOnline, setIsOnline] = useState(false);
+  const [globalLoading, setGlobalLoading] = useState(true);
   const [currentDay, setCurrentDay] = useState('Monday-Friday');
   const [securityOverlay, setSecurityOverlay] = useState(null);
 
-  // Fallback states for offline mode
-  const [students, setStudents] = useState(() => {
-    const saved = localStorage.getItem('codegate_v2_students');
-    return saved ? JSON.parse(saved) : INITIAL_STUDENT_WHITELIST;
-  });
-
-  const [colleges, setColleges] = useState(() => {
-    const saved = localStorage.getItem('codegate_v2_colleges');
-    return saved ? JSON.parse(saved) : [
-      { collegeId: "CLG001", collegeName: "ABC Engineering College", location: "Coimbatore", status: "active", createdAt: new Date().toISOString() }
-    ];
-  });
-
+  const [students, setStudents] = useState([]);
+  const [colleges, setColleges] = useState([]);
   const [currentUser, setCurrentUser] = useState(() => {
-    const saved = localStorage.getItem('codegate_v2_user');
-    return saved ? JSON.parse(saved) : null;
+    const savedUser = localStorage.getItem('currentUser');
+    if (savedUser) {
+      try {
+        return JSON.parse(savedUser);
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
   });
-
-  const [activityLogs, setActivityLogs] = useState(() => {
-    const saved = localStorage.getItem('codegate_v2_activity_logs');
-    return saved ? JSON.parse(saved) : [
-      { time: "16:54:00", user: "System Monitor", role: "system", action: "GATE_INITIALIZATION", details: "CodeGate security environment launched." }
-    ];
-  });
+  const [activityLogs, setActivityLogs] = useState([]);
 
   const [departments, setDepartments] = useState([]);
   const [batches, setBatches] = useState([]);
   const [sections, setSections] = useState([]);
   const [semesters, setSemesters] = useState([]);
   const [modules, setModules] = useState([]);
-  const [completedModules, setCompletedModules] = useState(() => {
-    const saved = localStorage.getItem('codegate_v2_completed_modules');
-    return saved ? JSON.parse(saved) : {};
-  });
-
-  // Sync offline states to local storage
-  useEffect(() => {
-    if (!isOnline) {
-      localStorage.setItem('codegate_v2_students', JSON.stringify(students));
-    }
-  }, [students, isOnline]);
-
-  useEffect(() => {
-    if (!isOnline) {
-      localStorage.setItem('codegate_v2_colleges', JSON.stringify(colleges));
-    }
-  }, [colleges, isOnline]);
-
-  useEffect(() => {
-    localStorage.setItem('codegate_v2_user', JSON.stringify(currentUser));
-  }, [currentUser]);
-
-  useEffect(() => {
-    if (!isOnline) {
-      localStorage.setItem('codegate_v2_activity_logs', JSON.stringify(activityLogs));
-    }
-  }, [activityLogs, isOnline]);
-
-  useEffect(() => {
-    if (!isOnline) {
-      localStorage.setItem('codegate_v2_completed_modules', JSON.stringify(completedModules));
-    }
-  }, [completedModules, isOnline]);
+  const [completedModules, setCompletedModules] = useState({});
 
   // Check backend server status
   const checkStatus = async () => {
@@ -173,6 +86,17 @@ export const AssessmentProvider = ({ children }) => {
       const studentsRes = await fetch(`${API_BASE_URL}/admin/students`);
       const studentsData = await studentsRes.json();
       setStudents(studentsData);
+
+      // Sync current student user with the refreshed database state
+      setCurrentUser(prev => {
+        if (prev && prev.role === 'student') {
+          const fresh = studentsData.find(s => s.id === (prev.id || prev.studentId));
+          if (fresh) {
+            return { ...prev, ...fresh, role: 'student' };
+          }
+        }
+        return prev;
+      });
 
       const logsRes = await fetch(`${API_BASE_URL}/admin/syslogs`);
       const logsData = await logsRes.json();
@@ -204,7 +128,9 @@ export const AssessmentProvider = ({ children }) => {
   useEffect(() => {
     checkStatus().then(online => {
       if (online) {
-        fetchBackendData();
+        fetchBackendData().finally(() => setGlobalLoading(false));
+      } else {
+        setGlobalLoading(false);
       }
     });
 
@@ -345,19 +271,25 @@ export const AssessmentProvider = ({ children }) => {
   const loginStudent = async (email, password, role) => {
     if (isOnline) {
       try {
+        const backendRole = role === 'assessment' ? 'student' : (role === 'staff' ? 'trainer' : role);
         const res = await fetch(`${API_BASE_URL}/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password, role: role === 'staff' ? 'trainer' : role })
+          body: JSON.stringify({ email, password, role: backendRole })
         });
         const data = await res.json();
         if (data.success) {
-          // Adjust role string for frontend compatibility if role is 'trainer'
+          // Adjust role string for frontend compatibility
+          let sessionRole = data.user.role;
+          if (sessionRole === 'trainer') sessionRole = 'staff';
+          if (role === 'assessment') sessionRole = 'assessment';
+
           const sessionUser = {
             ...data.user,
-            role: data.user.role === 'trainer' ? 'staff' : data.user.role
+            role: sessionRole
           };
           setCurrentUser(sessionUser);
+          localStorage.setItem('currentUser', JSON.stringify(sessionUser));
           await fetchBackendData();
           return { success: true, user: sessionUser, rewardAdded: data.rewardAdded };
         } else {
@@ -367,66 +299,27 @@ export const AssessmentProvider = ({ children }) => {
         return { success: false, message: "Connection to Express server failed." };
       }
     } else {
-      // Offline fallback
-      const emailLower = email.toLowerCase();
-      if (role === 'student') {
-        const targetIdx = students.findIndex(s => s.email.toLowerCase() === emailLower && s.registered);
-        if (targetIdx === -1) {
-          return { success: false, message: "Invalid email or student not registered yet." };
-        }
-
-        const student = students[targetIdx];
-        if (student.password !== password) {
-          return { success: false, message: "Incorrect password." };
-        }
-
-        let pointsBonus = 0;
-        let streakMsg = "";
-        const updatedStudents = [...students];
-
-        if (!student.dailyStreakBonusAdded) {
-          pointsBonus = 20;
-          updatedStudents[targetIdx].points += pointsBonus;
-          updatedStudents[targetIdx].dailyStreakBonusAdded = true;
-          streakMsg = " | Daily Login Reward (+20 pts)";
-        }
-
-        const logMsg = `${new Date().toLocaleString()} - Session Authenticated${streakMsg}`;
-        updatedStudents[targetIdx].loginLogs = [logMsg, ...updatedStudents[targetIdx].loginLogs];
-        updatedStudents[targetIdx].level = calculateLevel(updatedStudents[targetIdx].points);
-
-        setStudents(updatedStudents);
-
-        const sessionUser = {
-          ...updatedStudents[targetIdx],
-          role: "student"
-        };
-
-        setCurrentUser(sessionUser);
-        addActivityLog(student.name, "student", "LOGIN", `Logged in successfully.${pointsBonus > 0 ? ' Earned +20 login points.' : ''}`);
-        return { success: true, user: sessionUser, rewardAdded: pointsBonus > 0 };
-      } else {
-        const account = ROLES_DATABASE[role];
-        if (!account || account.email !== emailLower) {
-          return { success: false, message: `Access denied. Invalid credentials for role ${role.toUpperCase()}.` };
-        }
-        if (account.password !== password) {
-          return { success: false, message: "Incorrect password." };
-        }
-
-        const sessionUser = { ...account };
-        setCurrentUser(sessionUser);
-        addActivityLog(account.name, role, "LOGIN", `Role terminal authorized: ${role.toUpperCase()}`);
-        return { success: true, user: sessionUser };
-      }
+      return { success: false, message: "Database connection failed. Cannot log in." };
     }
   };
 
-  const logoutStudent = () => {
+  const logoutStudent = async () => {
     if (currentUser) {
+      if (isOnline) {
+        try {
+          await fetch(`${API_BASE_URL}/auth/logout`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: currentUser.userId || (currentUser.role === 'student' ? currentUser.studentId : currentUser.id) })
+          });
+        } catch (e) {
+          console.error('Logout error', e);
+        }
+      }
       addActivityLog(currentUser.name, currentUser.role, "LOGOUT", `Logged out from session.`);
     }
     setCurrentUser(null);
+    localStorage.removeItem('currentUser');
   };
 
   const updateQuizScore = async (score) => {
@@ -517,6 +410,12 @@ export const AssessmentProvider = ({ children }) => {
             completedAssessments: prev.completedAssessments + 1,
             weeklyCertIssued: data.weeklyCertIssued || prev.weeklyCertIssued
           }));
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+          });
+          playSuccessSound();
           await fetchBackendData();
         }
       } catch (error) {
@@ -626,6 +525,12 @@ export const AssessmentProvider = ({ children }) => {
             quizScore: type === 'aptitude' ? (prev.quizScore || 0) + score : prev.quizScore,
             codingScore: type === 'coding_mcq' ? (prev.codingScore || 0) + score : prev.codingScore
           }));
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+          });
+          playSuccessSound();
           await fetchBackendData();
         }
       } catch (error) {
@@ -832,6 +737,8 @@ export const AssessmentProvider = ({ children }) => {
 
   return (
     <AssessmentContext.Provider value={{
+      globalLoading,
+      setGlobalLoading,
       students,
       colleges,
       setColleges,
