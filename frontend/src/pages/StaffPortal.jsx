@@ -1,12 +1,31 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AssessmentContext, API_BASE_URL } from '../context/AssessmentContext';
 import BulkUpload from '../components/BulkUpload';
-import { Users, Plus, FileText, ClipboardList, Code2, CheckCircle2, Upload } from 'lucide-react';
+import { Users, Plus, FileText, ClipboardList, Code2, CheckCircle2, Upload, Lock, Unlock } from 'lucide-react';
 
 const StaffPortal = () => {
-  const { students, departments, isOnline } = useContext(AssessmentContext);
+  const { students, departments, modules, isOnline, fetchBackendData } = useContext(AssessmentContext);
   const [activeTab, setActiveTab] = useState('directory');
   const [selectedDept, setSelectedDept] = useState(departments[0]);
+
+  const handleToggleModule = async (studentId, moduleId, isCurrentlyUnlocked) => {
+    const endpoint = isCurrentlyUnlocked ? 'lock' : 'unlock';
+    try {
+      const res = await fetch(`${API_BASE_URL}/trainer/students/${studentId}/${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ moduleId })
+      });
+      const data = await res.json();
+      if (data.success) {
+        if (fetchBackendData) {
+          await fetchBackendData();
+        }
+      }
+    } catch (e) {
+      console.error("Error toggling module access:", e);
+    }
+  };
 
   // Filter students based on role and selected department
   const filteredStudents = students.filter(s => s.department === selectedDept);
@@ -29,8 +48,9 @@ const StaffPortal = () => {
   const [codeDesc, setCodeDesc] = useState('');
   const [codeDiff, setCodeDiff] = useState('Easy');
   const [codeLang, setCodeLang] = useState('JavaScript');
-  const [tcInput, setTcInput] = useState('');
-  const [tcOutput, setTcOutput] = useState('');
+  const [testCases, setTestCases] = useState([{ input: '', output: '' }]);
+  const [codeModule, setCodeModule] = useState('Module 1');
+  const [customModule, setCustomModule] = useState('');
 
   // Mock Fallbacks
   const mockSubmissions = [
@@ -103,9 +123,12 @@ const StaffPortal = () => {
   // Coding Question submission
   const handleAddCodingQuestion = async (e) => {
     e.preventDefault();
-    if (!codeTitle || !codeDesc || !tcInput || !tcOutput) {
-      return alert("Please enter title, description, and at least one test case.");
+    const validTestCases = testCases.filter(tc => tc.input.trim() !== '' && tc.output.trim() !== '');
+    if (!codeTitle || !codeDesc || validTestCases.length === 0) {
+      return alert("Please enter title, description, and at least one valid test case.");
     }
+
+    const selectedModule = codeModule === 'Other' ? customModule : codeModule;
 
     if (isOnline) {
       try {
@@ -117,18 +140,19 @@ const StaffPortal = () => {
             description: codeDesc,
             difficulty: codeDiff,
             language: [codeLang],
-            testCases: [{ input: tcInput, output: tcOutput }]
+            testCases: validTestCases,
+            module: selectedModule
           })
         });
         const data = await res.json();
         if (data.success) {
           alert("Coding Sandbox Question added successfully!");
-          setCodeTitle(''); setCodeDesc(''); setTcInput(''); setTcOutput('');
+          setCodeTitle(''); setCodeDesc(''); setTestCases([{ input: '', output: '' }]); setCustomModule('');
         }
       } catch (e) { alert("Error connecting to server."); }
     } else {
-      alert("Offline Sandbox: Coding question added to mock state.");
-      setCodeTitle(''); setCodeDesc(''); setTcInput(''); setTcOutput('');
+      alert(`Offline Sandbox: Coding question added under ${selectedModule} to mock state.`);
+      setCodeTitle(''); setCodeDesc(''); setTestCases([{ input: '', output: '' }]); setCustomModule('');
     }
   };
 
@@ -155,6 +179,7 @@ const StaffPortal = () => {
         <table className="leaderboard-table">
           <thead>
             <tr>
+              <th>Status</th>
               <th>Student ID</th>
               <th>Name</th>
               <th>Registered</th>
@@ -162,13 +187,49 @@ const StaffPortal = () => {
               <th>Coding Status</th>
               <th>Points Balance</th>
               <th>Developer Level</th>
+              <th>Module Access</th>
             </tr>
           </thead>
           <tbody>
             {filteredStudents.map((student, idx) => (
               <tr key={idx}>
+                <td>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span style={{
+                      display: 'inline-block',
+                      width: '8px',
+                      height: '8px',
+                      borderRadius: '50%',
+                      background: student.isOnline ? '#10b981' : '#64748b',
+                      boxShadow: student.isOnline ? '0 0 8px #10b981' : 'none',
+                      marginRight: '6px'
+                    }}></span>
+                    <span style={{ fontSize: '12px', color: student.isOnline ? '#10b981' : 'var(--text-muted)' }}>
+                      {student.isOnline ? 'Online' : 'Offline'}
+                    </span>
+                  </div>
+                </td>
                 <td style={{ fontFamily: 'var(--font-code)', fontSize: '13px' }}>{student.id}</td>
-                <td style={{ fontWeight: '500' }}>{student.name}</td>
+                <td style={{ fontWeight: '500' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{
+                      width: '24px',
+                      height: '24px',
+                      borderRadius: '50%',
+                      background: 'rgba(0,191,255,0.1)',
+                      border: '1px solid rgba(0,191,255,0.3)',
+                      overflow: 'hidden',
+                      flexShrink: 0
+                    }}>
+                      <img 
+                        src={`https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent((student.level || 'Novice') + '-' + student.name)}`}
+                        alt="Avatar"
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    </div>
+                    <span>{student.name}</span>
+                  </div>
+                </td>
                 <td>
                   <span style={{ color: student.registered ? '#10b981' : 'var(--text-muted)', display: 'flex', gap: '4px', alignItems: 'center', fontSize: '13px' }}>
                     <CheckCircle2 size={14} /> {student.registered ? 'Active' : 'Unregistered'}
@@ -189,6 +250,39 @@ const StaffPortal = () => {
                   <span className="cyber-badge" style={{ fontSize: '10px', background: 'rgba(0,191,255,0.05)', borderColor: 'rgba(0,191,255,0.2)' }}>
                     {student.level}
                   </span>
+                </td>
+                <td>
+                  <div style={{ display: 'flex', gap: '6px' }}>
+                    {[
+                      { id: 'aptitude', label: 'APT' },
+                      { id: 'coding-mcq', label: 'MCQ' },
+                      { id: 'database-sql', label: 'SQL' },
+                      { id: 'computer-fundamentals', label: 'FND' }
+                    ].map(mod => {
+                      const isUnlocked = student.unlockedModules && student.unlockedModules.includes(mod.id);
+                      return (
+                        <button
+                          key={mod.id}
+                          onClick={() => handleToggleModule(student.id, mod.id, isUnlocked)}
+                          className="cyber-badge"
+                          style={{
+                            padding: '3px 6px',
+                            fontSize: '10px',
+                            cursor: 'pointer',
+                            background: isUnlocked ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.1)',
+                            borderColor: isUnlocked ? '#10b981' : '#ef4444',
+                            color: isUnlocked ? '#10b981' : '#ef4444',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '3px'
+                          }}
+                        >
+                          {isUnlocked ? <Unlock size={10} /> : <Lock size={10} />}
+                          {mod.label}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </td>
               </tr>
             ))}
@@ -251,15 +345,40 @@ const StaffPortal = () => {
   const renderAddCoding = () => (
     <div className="glass-panel" style={{ padding: '24px' }}>
       <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px' }}>Upload Coding Challenge Problem</h2>
-      <form onSubmit={handleAddCodingQuestion} style={{ display: 'flex', flexDirection: 'column', gap: '15px', maxWidth: '600px' }}>
-        <div>
-          <label className="cyber-label">Challenge Title</label>
-          <input type="text" placeholder="e.g. Fibonacci Numbers" className="cyber-input" value={codeTitle} onChange={(e) => setCodeTitle(e.target.value)} />
+      <form onSubmit={handleAddCodingQuestion} style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '800px' }}>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '15px' }}>
+          <div>
+            <label className="cyber-label">Challenge Title</label>
+            <input type="text" placeholder="e.g. Fibonacci Numbers" className="cyber-input" value={codeTitle} onChange={(e) => setCodeTitle(e.target.value)} />
+          </div>
+          <div>
+            <label className="cyber-label">Module Selection</label>
+            <select className="cyber-select" value={codeModule} onChange={(e) => setCodeModule(e.target.value)}>
+              {modules?.length > 0 ? modules.map(m => (
+                <option key={m.moduleId || m.moduleName} value={m.moduleName}>{m.moduleName}</option>
+              )) : (
+                <>
+                  <option value="Module 1">Module 1</option>
+                  <option value="Module 2">Module 2</option>
+                  <option value="Module 3">Module 3</option>
+                </>
+              )}
+              <option value="Other">Other (Manual Entry)</option>
+            </select>
+          </div>
         </div>
+
+        {codeModule === 'Other' && (
+          <div>
+            <label className="cyber-label">Custom Module Name</label>
+            <input type="text" placeholder="e.g. Advanced Python" className="cyber-input" value={customModule} onChange={(e) => setCustomModule(e.target.value)} />
+          </div>
+        )}
 
         <div>
           <label className="cyber-label">Problem Description</label>
-          <textarea rows={4} placeholder="Write instructions, constraints, and inputs..." className="cyber-input" style={{ fontFamily: 'var(--font-cyber)', resize: 'vertical' }} value={codeDesc} onChange={(e) => setCodeDesc(e.target.value)} />
+          <textarea rows={6} placeholder="Write instructions, constraints, and inputs..." className="cyber-input" style={{ fontFamily: 'var(--font-cyber)', resize: 'vertical' }} value={codeDesc} onChange={(e) => setCodeDesc(e.target.value)} />
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
@@ -281,18 +400,57 @@ const StaffPortal = () => {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-          <div>
-            <label className="cyber-label">Test Case Input</label>
-            <input type="text" placeholder="e.g. 5" className="cyber-input" value={tcInput} onChange={(e) => setTcInput(e.target.value)} />
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '20px', marginTop: '10px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+            <label className="cyber-label" style={{ margin: 0 }}>Test Cases</label>
+            <button 
+              type="button" 
+              onClick={() => setTestCases([...testCases, { input: '', output: '' }])}
+              className="btn-cyber-outline"
+              style={{ padding: '6px 12px', fontSize: '12px' }}
+            >
+              + Add Test Case
+            </button>
           </div>
-          <div>
-            <label className="cyber-label">Expected Output</label>
-            <input type="text" placeholder="e.g. 5" className="cyber-input" value={tcOutput} onChange={(e) => setTcOutput(e.target.value)} />
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            {testCases.map((tc, index) => (
+              <div key={index} style={{ display: 'flex', gap: '15px', alignItems: 'flex-start', background: 'rgba(0,0,0,0.2)', padding: '15px', borderRadius: '8px' }}>
+                <div style={{ flex: 1 }}>
+                  <label className="cyber-label" style={{ fontSize: '11px' }}>Input {index + 1}</label>
+                  <textarea rows={2} placeholder="e.g. 5" className="cyber-input" value={tc.input} onChange={(e) => {
+                    const newTc = [...testCases];
+                    newTc[index].input = e.target.value;
+                    setTestCases(newTc);
+                  }} style={{ resize: 'vertical' }} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label className="cyber-label" style={{ fontSize: '11px' }}>Expected Output {index + 1}</label>
+                  <textarea rows={2} placeholder="e.g. 120" className="cyber-input" value={tc.output} onChange={(e) => {
+                    const newTc = [...testCases];
+                    newTc[index].output = e.target.value;
+                    setTestCases(newTc);
+                  }} style={{ resize: 'vertical' }} />
+                </div>
+                {testCases.length > 1 && (
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      const newTc = testCases.filter((_, i) => i !== index);
+                      setTestCases(newTc);
+                    }}
+                    style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444', color: '#ef4444', padding: '8px', borderRadius: '6px', cursor: 'pointer', marginTop: '22px' }}
+                    title="Remove Test Case"
+                  >
+                    X
+                  </button>
+                )}
+              </div>
+            ))}
           </div>
         </div>
 
-        <button type="submit" className="btn-neon" style={{ marginTop: '10px' }}>Publish Problem</button>
+        <button type="submit" className="btn-neon" style={{ marginTop: '20px', padding: '14px', fontSize: '16px' }}>Publish Coding Problem</button>
       </form>
     </div>
   );

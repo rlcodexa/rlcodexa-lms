@@ -467,6 +467,13 @@ const Aptitude = ({ setCurrentPage }) => {
   if (!selectedSubModule) {
     return (
       <div>
+        <button 
+          className="btn-cyber-outline" 
+          onClick={handleBackToTopics} 
+          style={{ padding: '8px 16px', fontSize: '13px', marginBottom: '16px' }}
+        >
+          <ArrowLeft size={14} style={{ marginRight: '6px' }} /> Back to Modules
+        </button>
         <div className="page-header" style={{ marginBottom: '20px' }}>
           <div>
             <div className="cyber-badge" style={{ marginBottom: '8px' }}>
@@ -476,9 +483,6 @@ const Aptitude = ({ setCurrentPage }) => {
               {selectedModule.title} <span>Sub-Modules</span>
             </h1>
           </div>
-          <button className="btn-cyber-outline" onClick={handleBackToTopics} style={{ padding: '8px 16px', fontSize: '13px' }}>
-            <ArrowLeft size={14} /> Back to Modules
-          </button>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
           {selectedModule.subModules.map(sm => {
@@ -526,6 +530,13 @@ const Aptitude = ({ setCurrentPage }) => {
 
   return (
     <div>
+      <button 
+        className="btn-cyber-outline" 
+        onClick={handleBackToModules} 
+        style={{ padding: '8px 16px', fontSize: '13px', marginBottom: '16px' }}
+      >
+        <ArrowLeft size={14} style={{ marginRight: '6px' }} /> Back
+      </button>
       <div className="page-header" style={{ marginBottom: '16px' }}>
         <div>
           <div className="cyber-badge" style={{ marginBottom: '8px' }}>
@@ -535,9 +546,6 @@ const Aptitude = ({ setCurrentPage }) => {
             {selectedSubModule.title}
           </h1>
         </div>
-        <button className="btn-cyber-outline" onClick={handleBackToModules} style={{ padding: '8px 16px', fontSize: '13px' }}>
-          <ArrowLeft size={14} /> Back
-        </button>
       </div>
 
       {submitted ? (

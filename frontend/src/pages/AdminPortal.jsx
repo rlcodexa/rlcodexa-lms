@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 
 const AdminPortal = () => {
-  const { students, colleges, departments, batches, modules, setColleges, activityLogs, resetAllData, isOnline, refreshData, approveStudent, deleteStudent, deleteStaff, deleteCollege } = useContext(AssessmentContext);
+  const { students, colleges, departments, batches, modules, setDepartments, setModules, setColleges, activityLogs, resetAllData, isOnline, refreshData, approveStudent, deleteStudent, deleteStaff, deleteCollege } = useContext(AssessmentContext);
   const [activeTab, setActiveTab] = useState('whitelist');
   const [filterType, setFilterType] = useState('all');
 
@@ -25,6 +25,17 @@ const AdminPortal = () => {
   const [newClgId, setNewClgId] = useState('');
   const [newClgName, setNewClgName] = useState('');
   const [newClgLoc, setNewClgLoc] = useState('');
+
+  // Department States
+  const [newDeptId, setNewDeptId] = useState('');
+  const [newDeptName, setNewDeptName] = useState('');
+  const [newDeptCollege, setNewDeptCollege] = useState('');
+
+  // Module States
+  const [newModId, setNewModId] = useState('');
+  const [newModName, setNewModName] = useState('');
+  const [newModTopics, setNewModTopics] = useState(10);
+  const [newModDept, setNewModDept] = useState('');
 
   // Staff State
   const [staff, setStaff] = useState([]);
@@ -50,6 +61,7 @@ const AdminPortal = () => {
   const [newId, setNewId] = useState('');
   const [newName, setNewName] = useState('');
   const [newEmail, setNewEmail] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [whitelistCollege, setWhitelistCollege] = useState('');
 
   useEffect(() => {
@@ -173,6 +185,32 @@ const AdminPortal = () => {
       alert("College added to offline sandbox state.");
       setNewClgId(''); setNewClgName(''); setNewClgLoc('');
     }
+  };
+
+  // Department Creation
+  const handleCreateDepartment = async (e) => {
+    e.preventDefault();
+    if (!newDeptId || !newDeptName) return alert("Fill in all department fields.");
+    if (isOnline) {
+      alert("Online creation of departments not fully implemented in backend yet. Switching to offline sandbox state.");
+    }
+    const currentDepts = Array.isArray(departments) ? departments : [];
+    setDepartments([...currentDepts, { departmentId: newDeptId, departmentName: newDeptName, collegeId: newDeptCollege || (colleges[0]?.collegeId || 'CLG001'), status: 'active' }]);
+    alert("Department added to offline sandbox state.");
+    setNewDeptId(''); setNewDeptName('');
+  };
+
+  // Module Creation
+  const handleCreateModule = async (e) => {
+    e.preventDefault();
+    if (!newModId || !newModName) return alert("Fill in all module fields.");
+    if (isOnline) {
+      alert("Online creation of modules not fully implemented in backend yet. Switching to offline sandbox state.");
+    }
+    const currentMods = Array.isArray(modules) ? modules : [];
+    setModules([...currentMods, { moduleId: newModId, moduleName: newModName, totalTopics: newModTopics, departmentId: newModDept || (departments[0]?.departmentId || 'DPT001') }]);
+    alert("Module added to offline sandbox state.");
+    setNewModId(''); setNewModName('');
   };
 
   // Staff Creation
@@ -336,6 +374,7 @@ const AdminPortal = () => {
             rollNo: newId,
             name: newName,
             email: newEmail || `${newName.toLowerCase().replace(' ', '.')}@codegate.edu`,
+            password: newPassword || 'default123',
             college: whitelistCollege || (colleges[0]?.collegeName || "ABC Engineering College")
           })
         });
@@ -343,7 +382,7 @@ const AdminPortal = () => {
         if (data.success) {
           alert(`Successfully whitelisted student slot: ${newId}`);
           refreshData();
-          setNewId(''); setNewName(''); setNewEmail('');
+          setNewId(''); setNewName(''); setNewEmail(''); setNewPassword('');
         } else {
           alert(data.message);
         }
@@ -356,7 +395,7 @@ const AdminPortal = () => {
         department: "Computer Science & Engineering",
         college: whitelistCollege || (colleges[0]?.collegeName || "ABC Engineering College"),
         registered: false,
-        password: "",
+        password: newPassword || 'default123',
         completedQuiz: false,
         quizScore: 0,
         completedCoding: false,
@@ -371,7 +410,7 @@ const AdminPortal = () => {
         weeklyCertIssued: false
       });
       alert(`Offline whitelist slot injected successfully: ${newId}`);
-      setNewId(''); setNewName(''); setNewEmail('');
+      setNewId(''); setNewName(''); setNewEmail(''); setNewPassword('');
     }
   };
 
@@ -393,6 +432,10 @@ const AdminPortal = () => {
           <div>
             <label className="cyber-label">Institutional Email</label>
             <input type="email" placeholder="e.g. priyan.b@codegate.edu" className="cyber-input" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} />
+          </div>
+          <div>
+            <label className="cyber-label">Password</label>
+            <input type="text" placeholder="e.g. secure123" className="cyber-input" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
           </div>
           <div>
             <label className="cyber-label">College Selection</label>
@@ -1013,7 +1056,7 @@ const AdminPortal = () => {
     const collegeStaff = staff.filter(s => s.details?.college === selectedHubCollege);
     const collegeStudents = students.filter(s => s.college === selectedHubCollege);
 
-    const hod = collegeStaff.find(s => s.role === 'hod');
+    const hods = collegeStaff.filter(s => s.role === 'hod');
     const trainers = collegeStaff.filter(s => s.role === 'trainer');
 
     return (
@@ -1061,43 +1104,46 @@ const AdminPortal = () => {
           {/* HOD Section */}
           <div className="glass-panel" style={{ padding: '20px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-              <h4 style={{ fontWeight: 'bold', color: 'var(--primary-blue)' }}>HOD (Department Head)</h4>
-              {!hod && (
-                <button 
-                  onClick={() => {
-                    setStaffRole('hod');
-                    setStaffCollege(selectedHubCollege);
-                    setActiveTab('staff');
-                  }}
-                  className="btn-cyber-outline" 
-                  style={{ padding: '4px 8px', fontSize: '11px' }}
-                >
-                  + Add HOD
-                </button>
+              <h4 style={{ fontWeight: 'bold', color: 'var(--primary-blue)' }}>HODs (Department Heads)</h4>
+              <button 
+                onClick={() => {
+                  setStaffRole('hod');
+                  setStaffCollege(selectedHubCollege);
+                  setActiveTab('staff');
+                }}
+                className="btn-cyber-outline" 
+                style={{ padding: '4px 8px', fontSize: '11px' }}
+              >
+                + Add HOD
+              </button>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '300px', overflowY: 'auto' }}>
+              {hods.map((h, idx) => (
+                <div key={idx} style={{ background: 'rgba(15, 23, 42, 0.4)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <div style={{ fontWeight: '600', fontSize: '14px' }}>{h.name}</div>
+                    <div style={{ color: 'var(--text-muted)', fontSize: '12px' }}>{h.email}</div>
+                    <div style={{ fontSize: '11px', color: 'var(--secondary-cyan)' }}>Dept: {h.details?.department || 'CSE'}</div>
+                  </div>
+                  <button
+                    onClick={async () => {
+                       if (confirm(`Remove HOD ${h.name}?`)) {
+                         await deleteStaff(h.userId);
+                         fetchStaff();
+                       }
+                    }}
+                    style={{ padding: '4px 8px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '4px', cursor: 'pointer', fontSize: '11px' }}
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+              {hods.length === 0 && (
+                <div style={{ padding: '30px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>
+                  No HOD registered for this college.
+                </div>
               )}
             </div>
-            {hod ? (
-              <div style={{ background: 'rgba(15, 23, 42, 0.4)', padding: '15px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                <div style={{ fontWeight: '600', fontSize: '15px' }}>{hod.name}</div>
-                <div style={{ color: 'var(--text-muted)', fontSize: '13px', margin: '4px 0' }}>{hod.email}</div>
-                <div style={{ fontSize: '12px', color: 'var(--secondary-cyan)' }}>Dept: {hod.details?.department || 'CSE'}</div>
-                <button
-                  onClick={async () => {
-                     if (confirm(`Remove HOD ${hod.name}?`)) {
-                       await deleteStaff(hod.userId);
-                       fetchStaff();
-                     }
-                  }}
-                  style={{ marginTop: '10px', padding: '4px 8px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '4px', cursor: 'pointer', fontSize: '11px' }}
-                >
-                  Remove HOD
-                </button>
-              </div>
-            ) : (
-              <div style={{ padding: '30px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>
-                No HOD registered for this college.
-              </div>
-            )}
           </div>
 
           {/* Trainers Section */}
@@ -1269,6 +1315,30 @@ const AdminPortal = () => {
       
       {activeTab === 'departments' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div className="glass-panel" style={{ padding: '20px' }}>
+            <h3 style={{ fontSize: '15px', fontWeight: 'bold', marginBottom: '15px', display: 'flex', gap: '6px', alignItems: 'center' }}>
+              <Plus size={16} color="var(--primary-blue)" /> Create New Department
+            </h3>
+            <form onSubmit={handleCreateDepartment} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', alignItems: 'end' }}>
+              <div>
+                <label className="cyber-label">Department ID</label>
+                <input type="text" placeholder="e.g. CSE-01" className="cyber-input" value={newDeptId} onChange={(e) => setNewDeptId(e.target.value)} />
+              </div>
+              <div>
+                <label className="cyber-label">Department Name</label>
+                <input type="text" placeholder="e.g. Computer Science" className="cyber-input" value={newDeptName} onChange={(e) => setNewDeptName(e.target.value)} />
+              </div>
+              <div>
+                <label className="cyber-label">Assign to College</label>
+                <select className="cyber-select" value={newDeptCollege} onChange={(e) => setNewDeptCollege(e.target.value)}>
+                  {colleges.map((c, idx) => (
+                    <option key={idx} value={c.collegeId}>{c.collegeName}</option>
+                  ))}
+                </select>
+              </div>
+              <button type="submit" className="btn-neon" style={{ padding: '10px' }}>Create Department</button>
+            </form>
+          </div>
           <div className="glass-panel" style={{ padding: '24px' }}>
             <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '15px' }}>Departments Database</h3>
             <table className="leaderboard-table">
@@ -1306,17 +1376,31 @@ const AdminPortal = () => {
                   <th>Batch Name</th>
                   <th>Academic Year</th>
                   <th>Department</th>
+                  <th>Assigned Trainer</th>
                 </tr>
               </thead>
               <tbody>
-                {batches && batches.map((b, i) => (
-                  <tr key={i}>
-                    <td style={{ fontFamily: 'var(--font-code)', fontSize: '13px' }}>{b.batchId}</td>
-                    <td style={{ fontWeight: '500' }}>{b.batchName}</td>
-                    <td style={{ color: 'var(--text-muted)' }}>{b.academicYear}</td>
-                    <td>{b.departmentId}</td>
-                  </tr>
-                ))}
+                {batches && batches.map((b, i) => {
+                  const assignedTrainer = staff.find(s => s.userId === b.trainerId || s.id === b.trainerId) || { name: 'Unassigned', email: '' };
+                  return (
+                    <tr key={i}>
+                      <td style={{ fontFamily: 'var(--font-code)', fontSize: '13px' }}>{b.batchId}</td>
+                      <td style={{ fontWeight: '500' }}>{b.batchName}</td>
+                      <td style={{ color: 'var(--text-muted)' }}>{b.academicYear}</td>
+                      <td>{b.departmentId}</td>
+                      <td>
+                        {b.trainerId ? (
+                          <div>
+                            <div style={{ color: 'var(--secondary-cyan)', fontWeight: 'bold' }}>{assignedTrainer.name}</div>
+                            <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{b.trainerId}</div>
+                          </div>
+                        ) : (
+                          <span style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>None</span>
+                        )}
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
@@ -1325,6 +1409,34 @@ const AdminPortal = () => {
 
       {activeTab === 'modules' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div className="glass-panel" style={{ padding: '20px' }}>
+            <h3 style={{ fontSize: '15px', fontWeight: 'bold', marginBottom: '15px', display: 'flex', gap: '6px', alignItems: 'center' }}>
+              <Plus size={16} color="var(--primary-blue)" /> Create Learning Module
+            </h3>
+            <form onSubmit={handleCreateModule} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px', alignItems: 'end' }}>
+              <div>
+                <label className="cyber-label">Module ID</label>
+                <input type="text" placeholder="e.g. MOD-01" className="cyber-input" value={newModId} onChange={(e) => setNewModId(e.target.value)} />
+              </div>
+              <div>
+                <label className="cyber-label">Module Name</label>
+                <input type="text" placeholder="e.g. Advanced AI" className="cyber-input" value={newModName} onChange={(e) => setNewModName(e.target.value)} />
+              </div>
+              <div>
+                <label className="cyber-label">Total Topics</label>
+                <input type="number" className="cyber-input" value={newModTopics} onChange={(e) => setNewModTopics(parseInt(e.target.value))} />
+              </div>
+              <div>
+                <label className="cyber-label">Target Department</label>
+                <select className="cyber-select" value={newModDept} onChange={(e) => setNewModDept(e.target.value)}>
+                  {departments && departments.map((d, idx) => (
+                    <option key={idx} value={d.departmentId}>{d.departmentName}</option>
+                  ))}
+                </select>
+              </div>
+              <button type="submit" className="btn-neon" style={{ padding: '10px' }}>Create Module</button>
+            </form>
+          </div>
           <div className="glass-panel" style={{ padding: '24px' }}>
             <h3 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '15px' }}>Learning Modules Database</h3>
             <table className="leaderboard-table">

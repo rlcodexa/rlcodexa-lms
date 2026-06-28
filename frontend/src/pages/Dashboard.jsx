@@ -91,9 +91,14 @@ const Dashboard = ({ setCurrentPage }) => {
               border: '1px solid rgba(0,191,255,0.3)',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              overflow: 'hidden'
             }}>
-              <UserCheck size={30} color="var(--primary-blue)" />
+              <img 
+                src={`https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent((currentUser.level || 'Novice') + '-' + currentUser.name)}`}
+                alt="Avatar"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
             </div>
             <div style={{ flexGrow: 1 }}>
               <h2 style={{ fontSize: '22px', fontWeight: '800', marginBottom: '4px' }}>
@@ -187,10 +192,10 @@ const Dashboard = ({ setCurrentPage }) => {
               <button 
                 className="btn-neon" 
                 onClick={() => setCurrentPage('quiz')}
-                disabled={currentUser.completedQuiz}
-                style={{ width: '100%' }}
+                disabled={currentUser.completedQuiz || currentUser.role === 'assessment'}
+                style={{ width: '100%', opacity: currentUser.role === 'assessment' ? 0.5 : 1, cursor: currentUser.role === 'assessment' ? 'not-allowed' : 'pointer' }}
               >
-                {currentUser.completedQuiz ? 'Daily Quiz Completed' : 'Launch Daily Test Terminal'}
+                {currentUser.role === 'assessment' ? 'Locked in Test Mode' : (currentUser.completedQuiz ? 'Daily Quiz Completed' : 'Launch Daily Test Terminal')}
               </button>
             </div>
             {/* Daily Coding Gateway */}
@@ -215,10 +220,10 @@ const Dashboard = ({ setCurrentPage }) => {
               <button 
                 className="btn-neon" 
                 onClick={() => setCurrentPage('coding')}
-                disabled={currentUser.completedCoding}
-                style={{ width: '100%', background: 'linear-gradient(135deg, var(--secondary-cyan), var(--primary-blue))' }}
+                disabled={currentUser.completedCoding || currentUser.role === 'assessment'}
+                style={{ width: '100%', background: 'linear-gradient(135deg, var(--secondary-cyan), var(--primary-blue))', opacity: currentUser.role === 'assessment' ? 0.5 : 1, cursor: currentUser.role === 'assessment' ? 'not-allowed' : 'pointer' }}
               >
-                {currentUser.completedCoding ? 'Daily Coding Submitted' : 'Launch Coding Terminal'}
+                {currentUser.role === 'assessment' ? 'Locked in Test Mode' : (currentUser.completedCoding ? 'Daily Coding Submitted' : 'Launch Coding Terminal')}
               </button>
             </div>
           </div>
@@ -256,10 +261,10 @@ const Dashboard = ({ setCurrentPage }) => {
               <button 
                 className="btn-neon" 
                 onClick={() => setCurrentPage('coding')}
-                disabled={currentUser.completedCoding}
-                style={{ width: '100%', background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}
+                disabled={currentUser.completedCoding || currentUser.role === 'assessment'}
+                style={{ width: '100%', background: 'linear-gradient(135deg, #f59e0b, #d97706)', opacity: currentUser.role === 'assessment' ? 0.5 : 1, cursor: currentUser.role === 'assessment' ? 'not-allowed' : 'pointer' }}
               >
-                {currentUser.completedCoding ? 'Weekly Assessment Submitted' : 'Launch Saturday Assessment'}
+                {currentUser.role === 'assessment' ? 'Locked in Test Mode' : (currentUser.completedCoding ? 'Weekly Assessment Submitted' : 'Launch Saturday Assessment')}
               </button>
             </div>
           </div>

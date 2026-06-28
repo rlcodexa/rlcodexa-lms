@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { AssessmentContext } from '../context/AssessmentContext';
-import { Brain, Code2, Database, Monitor, ArrowRight, Trophy, Zap, BookOpen } from 'lucide-react';
+import { Brain, Code2, Database, Monitor, ArrowRight, Trophy, Zap, BookOpen, Lock } from 'lucide-react';
 
 const QuizHub = ({ setCurrentPage }) => {
   const { currentUser } = useContext(AssessmentContext);
@@ -57,13 +57,22 @@ const QuizHub = ({ setCurrentPage }) => {
   return (
     <div>
       <div className="page-header" style={{ marginBottom: '20px' }}>
-        <div>
-          <div className="cyber-badge" style={{ marginBottom: '8px' }}>
-            <BookOpen size={12} style={{ marginRight: '4px' }} /> ASSESSMENT HUB
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          <button 
+            onClick={() => setCurrentPage('dashboard')}
+            className="btn-cyber-outline" 
+            style={{ padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '6px' }}
+          >
+            <ArrowRight size={16} style={{ transform: 'rotate(180deg)' }} /> Back
+          </button>
+          <div>
+            <div className="cyber-badge" style={{ marginBottom: '8px' }}>
+              <BookOpen size={12} style={{ marginRight: '4px' }} /> ASSESSMENT HUB
+            </div>
+            <h1 className="page-title" style={{ margin: 0 }}>
+              Quiz <span>& Assessment Center</span>
+            </h1>
           </div>
-          <h1 className="page-title">
-            Quiz <span>& Assessment Center</span>
-          </h1>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '13px', color: 'var(--text-muted)' }}>
           <Zap size={16} color="var(--primary-blue)" />
@@ -81,27 +90,38 @@ const QuizHub = ({ setCurrentPage }) => {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '20px' }}>
         {assessments.map(item => {
           const Icon = item.icon;
+          // Student role has free access to practice. Assessment role is locked down to trainer assignments.
+          const isUnlocked = currentUser.role !== 'assessment' || (currentUser.unlockedModules && currentUser.unlockedModules.includes(item.id));
 
           return (
             <div
               key={item.id}
-              className="glass-panel glowing"
+              className={`glass-panel ${isUnlocked ? 'glowing' : ''}`}
               style={{
                 padding: '28px',
-                borderTop: `3px solid ${item.color}`,
-                background: item.gradient,
-                borderColor: item.borderColor,
-                cursor: 'pointer',
+                borderTop: `3px solid ${isUnlocked ? item.color : '#475569'}`,
+                background: isUnlocked ? item.gradient : 'rgba(30, 41, 59, 0.4)',
+                borderColor: isUnlocked ? item.borderColor : 'rgba(71, 85, 105, 0.3)',
+                cursor: isUnlocked ? 'pointer' : 'not-allowed',
+                opacity: isUnlocked ? 1 : 0.6,
                 transition: 'all 0.3s ease'
               }}
-              onClick={() => setCurrentPage(item.id)}
+              onClick={() => {
+                if (isUnlocked) {
+                  setCurrentPage(item.id);
+                }
+              }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-4px)';
-                e.currentTarget.style.boxShadow = `0 0 30px ${item.borderColor}`;
+                if (isUnlocked) {
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                  e.currentTarget.style.boxShadow = `0 0 30px ${item.borderColor}`;
+                }
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = 'var(--glow-shadow)';
+                if (isUnlocked) {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'var(--glow-shadow)';
+                }
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
@@ -109,22 +129,22 @@ const QuizHub = ({ setCurrentPage }) => {
                   padding: '12px',
                   borderRadius: '12px',
                   background: `rgba(0,0,0,0.3)`,
-                  border: `1px solid ${item.borderColor}`,
-                  color: item.color
+                  border: `1px solid ${isUnlocked ? item.borderColor : '#475569'}`,
+                  color: isUnlocked ? item.color : '#94a3b8'
                 }}>
-                  <Icon size={28} />
+                  {isUnlocked ? <Icon size={28} /> : <Lock size={28} />}
                 </div>
                 <span className="cyber-badge" style={{
                   background: `rgba(0,0,0,0.3)`,
-                  borderColor: item.borderColor,
-                  color: item.color,
+                  borderColor: isUnlocked ? item.borderColor : '#475569',
+                  color: isUnlocked ? item.color : '#94a3b8',
                   fontSize: '11px'
                 }}>
-                  {item.badge}
+                  {isUnlocked ? item.badge : 'Locked'}
                 </span>
               </div>
 
-              <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px', color: '#fff' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px', color: isUnlocked ? '#fff' : '#94a3b8' }}>
                 {item.title}
               </h3>
               <p style={{ color: 'var(--text-muted)', fontSize: '13px', lineHeight: '1.6', marginBottom: '20px', flexGrow: 1 }}>
@@ -132,21 +152,33 @@ const QuizHub = ({ setCurrentPage }) => {
               </p>
 
               <button
-                className="btn-neon"
+                className={isUnlocked ? "btn-neon" : "btn-cyber-outline"}
                 style={{
                   width: '100%',
                   padding: '12px',
                   fontSize: '14px',
-                  color: '#fff',
-                  background: `linear-gradient(135deg, ${item.color}, ${item.color}88)`,
-                  borderColor: item.borderColor
+                  color: isUnlocked ? '#fff' : '#94a3b8',
+                  background: isUnlocked ? `linear-gradient(135deg, ${item.color}, ${item.color}88)` : 'transparent',
+                  borderColor: isUnlocked ? item.borderColor : '#475569',
+                  cursor: isUnlocked ? 'pointer' : 'not-allowed'
                 }}
                 onClick={(e) => {
                   e.stopPropagation();
-                  setCurrentPage(item.id);
+                  if (isUnlocked) {
+                    setCurrentPage(item.id);
+                  }
                 }}
+                disabled={!isUnlocked}
               >
-                {item.action} <ArrowRight size={16} style={{ marginLeft: '8px' }} />
+                {isUnlocked ? (
+                  <>
+                    {item.action} <ArrowRight size={16} style={{ marginLeft: '8px' }} />
+                  </>
+                ) : (
+                  <>
+                    Locked by Trainer <Lock size={14} style={{ marginLeft: '8px' }} />
+                  </>
+                )}
               </button>
             </div>
           );

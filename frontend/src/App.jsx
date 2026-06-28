@@ -19,7 +19,7 @@ import DatabaseSQL from './pages/DatabaseSQL';
 import ComputerFundamentals from './pages/ComputerFundamentals';
 
 const MainAppContent = () => {
-  const { currentUser } = useContext(AssessmentContext);
+  const { currentUser, globalLoading } = useContext(AssessmentContext);
   const [currentPage, setCurrentPage] = useState('login');
 
   // Handle routing redirects on authentication state change
@@ -91,6 +91,30 @@ const MainAppContent = () => {
   if (!currentUser) {
     return (
       <div style={{ minHeight: '100vh', position: 'relative' }}>
+        {/* Global Loader Overlay */}
+        {globalLoading && (
+          <div style={{
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            background: 'rgba(2, 8, 23, 0.9)',
+            zIndex: 9999,
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center',
+            pointerEvents: 'all'
+          }}>
+            <div className="loader" style={{
+              border: '4px solid rgba(0, 191, 255, 0.2)',
+              borderTop: '4px solid var(--primary-blue)',
+              borderRadius: '50%',
+              width: '50px', height: '50px',
+              animation: 'spin 1s linear infinite'
+            }}></div>
+            <div style={{ marginTop: '15px', color: 'var(--primary-blue)', fontWeight: 'bold', letterSpacing: '2px' }}>INITIALIZING SYSTEM...</div>
+            <style>{`
+              @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+              body { pointer-events: ${globalLoading ? 'none' : 'auto'}; }
+            `}</style>
+          </div>
+        )}
         <CyberGrid />
         {renderContent()}
       </div>
@@ -100,6 +124,30 @@ const MainAppContent = () => {
   // Logged in layouts (sidebar + content workspace)
   return (
     <div className="app-layout" style={{ position: 'relative' }}>
+      {/* Global Loader Overlay */}
+      {globalLoading && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(2, 8, 23, 0.9)',
+          zIndex: 9999,
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          pointerEvents: 'all'
+        }}>
+          <div className="loader" style={{
+            border: '4px solid rgba(0, 191, 255, 0.2)',
+            borderTop: '4px solid var(--primary-blue)',
+            borderRadius: '50%',
+            width: '50px', height: '50px',
+            animation: 'spin 1s linear infinite'
+          }}></div>
+          <div style={{ marginTop: '15px', color: 'var(--primary-blue)', fontWeight: 'bold', letterSpacing: '2px' }}>INITIALIZING SYSTEM...</div>
+          <style>{`
+            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+            body { pointer-events: ${globalLoading ? 'none' : 'auto'}; }
+          `}</style>
+        </div>
+      )}
       <CyberGrid />
       <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
       <main className="main-content">
