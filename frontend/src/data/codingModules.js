@@ -1721,6 +1721,289 @@ const DSA_MODULES = [
   }
 ];
 
+const SQL_MODULES = [
+  // ============================================================
+  // MODULE 1: DATABASE & SCHEMA BASICS
+  // ============================================================
+  {
+    id: 'sql-db-basics',
+    title: 'Database & Schema Basics',
+    icon: '📁',
+    subModules: [
+      {
+        id: 'sql-intro-rdbms',
+        title: 'Intro & RDBMS Basics',
+        questions: [
+          {
+            id: 'sql-intro-1',
+            title: 'Check Engine Version',
+            desc: 'Write an SQL query to retrieve the current database/SQLite engine version.',
+            inputExample: 'Execute standard version query.',
+            outputExample: 'e.g. "3.39.4"',
+            constraints: ['Return a single value.'],
+            templates: { sql: `-- Write your SQL query here\nSELECT sqlite_version();\n` },
+            verifyKeyword: (code) => code.includes('select') && code.includes('sqlite_version')
+          }
+        ]
+      },
+      {
+        id: 'sql-tables-dtypes',
+        title: 'Tables & Data Types',
+        questions: [
+          {
+            id: 'sql-tbl-1',
+            title: 'List Employee Columns',
+            desc: 'Write a query to retrieve the schema definitions/column names of the "employees" table using PRAGMA.',
+            inputExample: 'Table: employees',
+            outputExample: 'List of column details',
+            constraints: ['Use SQLite table_info pragma.'],
+            templates: { sql: `-- Write your SQL query here\nPRAGMA table_info(` },
+            verifyKeyword: (code) => code.includes('pragma') && code.includes('table_info') && code.includes('employees')
+          }
+        ]
+      },
+      {
+        id: 'sql-keys-constraints',
+        title: 'Keys & Constraints',
+        questions: [
+          {
+            id: 'sql-key-1',
+            title: 'Create Primary Key Table',
+            desc: 'Write a query to create a table named "users" with an "id" column as an INTEGER PRIMARY KEY, and "username" as TEXT UNIQUE NOT NULL.',
+            inputExample: 'Table definition specifications',
+            outputExample: 'Successful table schema creation',
+            constraints: ['Apply PRIMARY KEY, UNIQUE, and NOT NULL.'],
+            templates: { sql: `-- Write your CREATE TABLE query here\nCREATE TABLE users (\n    ` },
+            verifyKeyword: (code) => code.includes('create') && code.includes('table') && code.includes('primary') && code.includes('key') && code.includes('unique') && code.includes('not') && code.includes('null')
+          }
+        ]
+      }
+    ]
+  },
+
+  // ============================================================
+  // MODULE 2: SQL COMMANDS & OPERATORS
+  // ============================================================
+  {
+    id: 'sql-commands-operators',
+    title: 'SQL Commands & Operators',
+    icon: '⌨️',
+    subModules: [
+      {
+        id: 'sql-ddl-dml',
+        title: 'DDL & DML commands',
+        questions: [
+          {
+            id: 'sql-cmd-insert',
+            title: 'Insert New Department',
+            desc: 'Write a query to insert a new department named "Marketing" with id 4 into the "departments" table.',
+            inputExample: 'Table: departments (id, name)',
+            outputExample: 'Row inserted',
+            constraints: ['Use INSERT INTO syntax.'],
+            templates: { sql: `-- Write your SQL query here\nINSERT INTO departments ` },
+            verifyKeyword: (code) => code.includes('insert') && code.includes('into') && code.includes('departments') && code.includes('values')
+          },
+          {
+            id: 'sql-cmd-update',
+            title: 'Update Employee Salary',
+            desc: 'Write a query to update the salary of employee with id 10 to 65000 in the "employees" table.',
+            inputExample: 'Table: employees (id, name, salary)',
+            outputExample: 'Salary updated to 65000',
+            constraints: ['Filter exactly id = 10.'],
+            templates: { sql: `-- Write your SQL query here\nUPDATE employees ` },
+            verifyKeyword: (code) => code.includes('update') && code.includes('employees') && code.includes('set') && code.includes('salary') && code.includes('where') && code.includes('10')
+          },
+          {
+            id: 'sql-cmd-delete',
+            title: 'Delete Inactive Projects',
+            desc: 'Write a query to delete all projects from the "projects" table where the status is "inactive".',
+            inputExample: 'Table: projects (id, name, status)',
+            outputExample: 'Row(s) deleted',
+            constraints: ['Filter on status = "inactive".'],
+            templates: { sql: `-- Write your SQL query here\nDELETE FROM projects ` },
+            verifyKeyword: (code) => code.includes('delete') && code.includes('from') && code.includes('projects') && code.includes('where') && code.includes('inactive')
+          }
+        ]
+      },
+      {
+        id: 'sql-operators-select',
+        title: 'Operators',
+        questions: [
+          {
+            id: 'sql-op-calc',
+            title: 'Calculate Annual Raise',
+            desc: 'Write a query to select employee name and their monthly salary multiplied by 1.1 (representing a 10% raise) as "new_salary" from the "employees" table.',
+            inputExample: 'Table: employees (name, salary)',
+            outputExample: 'List of names and calculated raise columns',
+            constraints: ['Alias the calculated column as new_salary.'],
+            templates: { sql: `-- Write your SQL query here\nSELECT name, salary * ` },
+            verifyKeyword: (code) => code.includes('select') && code.includes('salary') && (code.includes('*') || code.includes('1.1')) && code.includes('as') && code.includes('new_salary')
+          }
+        ]
+      }
+    ]
+  },
+
+  // ============================================================
+  // MODULE 3: FILTERING, SORTING & AGGREGATIONS
+  // ============================================================
+  {
+    id: 'sql-filter-aggregation',
+    title: 'Filtering & Aggregations',
+    icon: '🔍',
+    subModules: [
+      {
+        id: 'sql-filter-sort',
+        title: 'Filtering & Sorting Data',
+        questions: [
+          {
+            id: 'sql-filt-where',
+            title: 'Multiple Filter Conditions',
+            desc: 'Write a query to retrieve all columns from the "employees" table where the department ID is 2 and salary is greater than 45000.',
+            inputExample: 'Table: employees (id, name, salary, dept_id)',
+            outputExample: 'Rows matching conditions',
+            constraints: ['Use AND comparison.'],
+            templates: { sql: `-- Write your SQL query here\nSELECT * FROM employees WHERE ` },
+            verifyKeyword: (code) => code.includes('select') && code.includes('where') && code.includes('dept_id') && code.includes('salary') && code.includes('and')
+          },
+          {
+            id: 'sql-sort-order',
+            title: 'Sorting Results',
+            desc: 'Write a query to retrieve employee names and salaries, sorted by salary in descending order.',
+            inputExample: 'Table: employees (name, salary)',
+            outputExample: 'Sorted list of names and salaries',
+            constraints: ['Use ORDER BY and DESC.'],
+            templates: { sql: `-- Write your SQL query here\nSELECT name, salary FROM employees ORDER BY ` },
+            verifyKeyword: (code) => code.includes('order') && code.includes('by') && code.includes('salary') && code.includes('desc')
+          }
+        ]
+      },
+      {
+        id: 'sql-aggregates',
+        title: 'Aggregate Functions',
+        questions: [
+          {
+            id: 'sql-agg-avg',
+            title: 'Average and Maximum Salary',
+            desc: 'Write a query to retrieve the average salary (as avg_sal) and maximum salary (as max_sal) of all employees.',
+            inputExample: 'Table: employees (salary)',
+            outputExample: 'avg_sal, max_sal values',
+            constraints: ['Use AVG() and MAX() with appropriate aliases.'],
+            templates: { sql: `-- Write your SQL query here\nSELECT AVG(` },
+            verifyKeyword: (code) => code.includes('avg') && code.includes('max') && code.includes('salary')
+          }
+        ]
+      }
+    ]
+  },
+
+  // ============================================================
+  // MODULE 4: GROUPING & JOINS
+  // ============================================================
+  {
+    id: 'sql-groups-joins',
+    title: 'Grouping & Joins',
+    icon: '🔗',
+    subModules: [
+      {
+        id: 'sql-grouping-having',
+        title: 'Grouping Data',
+        questions: [
+          {
+            id: 'sql-grp-count',
+            title: 'Department Size Filter',
+            desc: 'Write a query to list the department ID and count of employees (as emp_count) for departments with more than 3 employees.',
+            inputExample: 'Table: employees (dept_id)',
+            outputExample: 'dept_id, emp_count list',
+            constraints: ['Use GROUP BY and HAVING COUNT(id) > 3.'],
+            templates: { sql: `-- Write your SQL query here\nSELECT dept_id, COUNT(*) as emp_count FROM employees GROUP BY ` },
+            verifyKeyword: (code) => code.includes('group') && code.includes('by') && code.includes('having') && code.includes('count') && code.includes('3')
+          }
+        ]
+      },
+      {
+        id: 'sql-joins-all',
+        title: 'Relational Joins',
+        questions: [
+          {
+            id: 'sql-join-inner',
+            title: 'INNER JOIN',
+            desc: 'Write a query to fetch the employee name and department name matching on dept_id.',
+            inputExample: 'Tables: employees (name, dept_id), departments (id, dept_name)',
+            outputExample: 'Employee-Department names matched',
+            constraints: ['Use INNER JOIN.'],
+            templates: { sql: `-- Write your SQL query here\nSELECT e.name, d.dept_name FROM employees e INNER JOIN departments d ` },
+            verifyKeyword: (code) => code.includes('inner') && code.includes('join') && code.includes('on')
+          },
+          {
+            id: 'sql-join-left',
+            title: 'LEFT JOIN',
+            desc: 'Write a query to fetch all employee names and their department names, showing NULL for departments that do not match.',
+            inputExample: 'Tables: employees (name, dept_id), departments (id, dept_name)',
+            outputExample: 'All employees, matched department names',
+            constraints: ['Use LEFT JOIN.'],
+            templates: { sql: `-- Write your SQL query here\nSELECT e.name, d.dept_name FROM employees e LEFT JOIN departments d ` },
+            verifyKeyword: (code) => code.includes('left') && code.includes('join') && code.includes('on')
+          }
+        ]
+      }
+    ]
+  },
+
+  // ============================================================
+  // MODULE 5: SUBQUERIES & SET OPERATORS
+  // ============================================================
+  {
+    id: 'sql-advanced-queries',
+    title: 'Advanced SQL Queries',
+    icon: '🚀',
+    subModules: [
+      {
+        id: 'sql-subqueries-nested',
+        title: 'Subqueries',
+        questions: [
+          {
+            id: 'sql-sub-nested',
+            title: 'Above Average Salary',
+            desc: 'Write a query to retrieve names and salaries of employees who earn more than the average salary of the entire company.',
+            inputExample: 'Table: employees (name, salary)',
+            outputExample: 'Employees with above average salaries',
+            constraints: ['Use a subquery with AVG().'],
+            templates: { sql: `-- Write your SQL query here\nSELECT name, salary FROM employees WHERE salary > (\n    SELECT ` },
+            verifyKeyword: (code) => code.includes('select') && code.includes('salary') && code.includes('where') && code.includes('avg')
+          }
+        ]
+      },
+      {
+        id: 'sql-set-operators',
+        title: 'Set Operators',
+        questions: [
+          {
+            id: 'sql-set-union',
+            title: 'UNION Customer & Supplier Cities',
+            desc: 'Write a query to retrieve all unique cities where either a customer or a supplier resides.',
+            inputExample: 'Tables: customers (city), suppliers (city)',
+            outputExample: 'List of unique cities',
+            constraints: ['Use UNION to combine results without duplicates.'],
+            templates: { sql: `-- Write your SQL query here\nSELECT city FROM customers\nUNION\nSELECT ` },
+            verifyKeyword: (code) => code.includes('union') && code.includes('select') && code.includes('city') && code.includes('customers') && code.includes('suppliers')
+          },
+          {
+            id: 'sql-set-intersect',
+            title: 'INTERSECT Common Branch Offices',
+            desc: 'Write a query to find cities that have both an active customer branch office and an active supplier branch office.',
+            inputExample: 'Tables: customers (city), suppliers (city)',
+            outputExample: 'Common cities list',
+            constraints: ['Use INTERSECT to retrieve matching rows.'],
+            templates: { sql: `-- Write your SQL query here\nSELECT city FROM customers\nINTERSECT\nSELECT ` },
+            verifyKeyword: (code) => code.includes('intersect') && code.includes('select') && code.includes('city')
+          }
+        ]
+      }
+    ]
+  }
+];
+
 export const CODING_LANGUAGES = [
   {
     id: 'python',
@@ -1736,15 +2019,15 @@ export const CODING_LANGUAGES = [
     icon: '☕',
     description: 'Java is a class-based, object-oriented language designed for portability. Learn Java syntax, OOP concepts, control flow, and exception handling.',
     color: '#ED8B00',
-    modules: JAVA_MODULES
+    modules: PYTHON_MODULES
   },
   {
-    id: 'javascript',
-    title: 'JavaScript',
-    icon: '🟨',
-    description: 'JavaScript is the language of the web. Master variables, functions, arrays, objects, and DOM manipulation with hands-on exercises.',
-    color: '#F7DF1E',
-    modules: JS_MODULES
+    id: 'sql',
+    title: 'SQL',
+    icon: '🗄️',
+    description: 'SQL is the standard language for relational database management. Write queries, joins, aggregates, and data filtering exercises.',
+    color: '#00D2FC',
+    modules: SQL_MODULES
   },
   {
     id: 'dsa',
@@ -1755,3 +2038,4 @@ export const CODING_LANGUAGES = [
     modules: DSA_MODULES
   }
 ];
+

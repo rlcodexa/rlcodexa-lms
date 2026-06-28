@@ -5,6 +5,28 @@ import { Play, Send, Clock, Terminal, Sparkles, ShieldAlert, ArrowLeft, Code2 } 
 import Editor from '@monaco-editor/react';
 import { CODING_LANGUAGES } from '../data/codingModules';
 
+const getDefaultTemplate = (language, question) => {
+  if (question?.templates && question.templates[language]) {
+    return question.templates[language];
+  }
+  const name = question?.title?.toLowerCase().replace(/[^a-z0-9]/g, '_') || 'solve';
+  
+  switch (language) {
+    case 'python':
+      return `def ${name}():\n    # Write your Python code here\n    pass\n`;
+    case 'javascript':
+      const camelName = name.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
+      return `function ${camelName}() {\n    // Write your JavaScript code here\n\n}\n`;
+    case 'java':
+      const pascalName = name.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('');
+      return `public class Solution {\n    // Write your Java code here\n    public void ${name}() {\n        \n    }\n}\n`;
+    case 'sql':
+      return `-- Write your SQL query here\nSELECT * FROM employees;\n`;
+    default:
+      return '';
+  }
+};
+
 const Coding = ({ setCurrentPage }) => {
   const { currentUser, updateCodingScore, addActivityLog } = useContext(AssessmentContext);
 
@@ -50,7 +72,7 @@ const Coding = ({ setCurrentPage }) => {
     const initialCodes = {};
     const initialStatus = {};
     selectedSubModule.questions.forEach((q, idx) => {
-      initialCodes[idx] = q.templates[language];
+      initialCodes[idx] = q.templates?.[language] || getDefaultTemplate(language, q);
       initialStatus[idx] = { hasRun: false, passed: 0, logs: "Console ready. Write code and click Run." };
     });
     setAnswersCode(initialCodes);
@@ -67,7 +89,7 @@ const Coding = ({ setCurrentPage }) => {
     const updatedCodes = {};
     const updatedStatus = {};
     selectedSubModule.questions.forEach((q, idx) => {
-      updatedCodes[idx] = q.templates[lang];
+      updatedCodes[idx] = q.templates?.[lang] || getDefaultTemplate(lang, q);
       updatedStatus[idx] = { hasRun: false, passed: 0, logs: `Language switched to ${lang.toUpperCase()}. Code sandbox reset.` };
     });
     setAnswersCode(updatedCodes);
@@ -79,10 +101,22 @@ const Coding = ({ setCurrentPage }) => {
     if (!q) return;
     const currentCode = answersCode[activeQuestionIdx] || '';
 
-    let logs = `Compiling code on sandbox workspace...\nUsing compiler: ${language === 'python' ? 'Python 3.10' : 'V8 Engine JavaScript'}\n`;
+    let compilerName = 'V8 Engine JavaScript';
+    if (language === 'python') {
+      compilerName = 'Python 3.10';
+    } else if (language === 'java') {
+      compilerName = 'JDK 17 Compiler';
+    } else if (language === 'sql') {
+      compilerName = 'SQLite 3.39 Query Optimizer';
+    }
+
+    let logs = `Compiling code on sandbox workspace...\nUsing compiler: ${compilerName}\n`;
     let passed = 0;
 
-    const isCodeChanged = currentCode.trim() !== "" && !currentCode.includes('# Write your') && !currentCode.includes('// Write your');
+    const isCodeChanged = currentCode.trim() !== "" && 
+      !currentCode.includes('# Write your') && 
+      !currentCode.includes('// Write your') &&
+      !currentCode.includes('-- Write your');
     const isCorrect = q.verifyKeyword(currentCode.toLowerCase());
 
     if (!isCodeChanged) {
@@ -114,7 +148,10 @@ const Coding = ({ setCurrentPage }) => {
       } else {
         const userCode = answersCode[idx] || '';
         const isCorrect = q.verifyKeyword(userCode.toLowerCase());
-        const isCodeChanged = userCode.trim() !== "" && !userCode.includes('# Write your') && !userCode.includes('// Write your');
+        const isCodeChanged = userCode.trim() !== "" && 
+          !userCode.includes('# Write your') && 
+          !userCode.includes('// Write your') &&
+          !userCode.includes('-- Write your');
         totalPassed += (isCodeChanged && isCorrect) ? 3 : 1;
       }
     });
@@ -182,7 +219,7 @@ const Coding = ({ setCurrentPage }) => {
               }}
               onClick={() => {
                 setSelectedLanguage(lang);
-                setLanguage(lang.id === 'javascript' ? 'javascript' : lang.id === 'java' ? 'java' : 'python');
+                setLanguage(lang.id === 'javascript' ? 'javascript' : lang.id === 'java' ? 'java' : lang.id === 'sql' ? 'sql' : 'python');
                 addActivityLog(currentUser?.name, "student", "CODING_LANGUAGE", `Selected language: ${lang.title}`);
               }}
             >
@@ -406,9 +443,15 @@ const Coding = ({ setCurrentPage }) => {
                 onChange={handleLanguageChange}
                 style={{ width: '110px', padding: '3px 6px', fontSize: '10px', borderRadius: '4px' }}
               >
-                <option value="python">Python 3</option>
-                <option value="javascript">JavaScript</option>
-                <option value="java">Java</option>
+                {selectedLanguage?.id === 'sql' ? (
+                  <option value="sql">SQL</option>
+                ) : (
+                  <>
+                    <option value="python">Python 3</option>
+                    <option value="javascript">JavaScript</option>
+                    <option value="java">Java</option>
+                  </>
+                )}
               </select>
             </div>
 

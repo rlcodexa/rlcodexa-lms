@@ -1,12 +1,25 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AssessmentContext, API_BASE_URL } from '../context/AssessmentContext';
 import BulkUpload from '../components/BulkUpload';
-import { Users, Plus, FileText, ClipboardList, Code2, CheckCircle2, Upload } from 'lucide-react';
+import { Users, Plus, FileText, ClipboardList, Code2, CheckCircle2, Upload, BookOpen, HelpCircle } from 'lucide-react';
 
-const StaffPortal = () => {
+const StaffPortal = ({ mode }) => {
   const { students, departments, isOnline } = useContext(AssessmentContext);
-  const [activeTab, setActiveTab] = useState('directory');
+  const [activeTab, setActiveTab] = useState(mode || 'directory');
   const [selectedDept, setSelectedDept] = useState(departments[0]);
+
+  // Sync activeTab when mode changes from sidebar/dashboard clicks
+  useEffect(() => {
+    if (mode) {
+      setActiveTab(mode);
+    }
+  }, [mode]);
+
+  // Answer Keys states
+  const [mcqQuestions, setMcqQuestions] = useState([]);
+  const [codingQuestions, setCodingQuestions] = useState([]);
+  const [keysLoading, setKeysLoading] = useState(false);
+  const [activeKeySubTab, setActiveKeySubTab] = useState('mcq');
 
   // Filter students based on role and selected department
   const filteredStudents = students.filter(s => s.department === selectedDept);
@@ -59,6 +72,77 @@ const StaffPortal = () => {
       setSubmissions(mockSubmissions);
     }
   };
+
+  const loadAnswerKeys = async () => {
+    setKeysLoading(true);
+    if (isOnline) {
+      try {
+        const codRes = await fetch(`${API_BASE_URL}/student/questions/coding`);
+        const codData = await codRes.json();
+        setCodingQuestions(Array.isArray(codData) ? codData : []);
+
+        const quizRes = await fetch(`${API_BASE_URL}/student/questions/quiz/${selectedAssessmentId || 'ASM001'}`);
+        const quizData = await quizRes.json();
+        setMcqQuestions(Array.isArray(quizData) ? quizData : []);
+      } catch (e) {
+        console.error("Error loading answer keys:", e);
+      }
+    } else {
+      // Offline fallback: parse codingModules and localStorage bulk questions
+      const offlineCoding = [];
+      try {
+        const { CODING_LANGUAGES } = await import('../data/codingModules');
+        CODING_LANGUAGES.forEach(langObj => {
+          if (langObj.modules) {
+            langObj.modules.forEach(mod => {
+              if (mod.subModules) {
+                mod.subModules.forEach(sub => {
+                  if (sub.questions) {
+                    sub.questions.forEach(q => {
+                      if (!offlineCoding.some(item => item.title === q.title)) {
+                        offlineCoding.push({
+                          codingQuestionId: q.id,
+                          title: q.title,
+                          description: q.desc,
+                          difficulty: 'Sandbox',
+                          language: [langObj.title],
+                          testCases: q.inputExample ? [{ input: q.inputExample, output: q.outputExample }] : [],
+                          module: mod.title
+                        });
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          }
+        });
+      } catch (err) {
+        console.error("Error loading offline coding modules:", err);
+      }
+
+      const localBulk = JSON.parse(localStorage.getItem('codegate_v2_bulk_questions') || '[]');
+      const bulkCoding = localBulk.filter(q => q.type === 'coding');
+      const bulkMcq = localBulk.filter(q => q.type === 'mcq' || !q.type);
+
+      setCodingQuestions([...offlineCoding, ...bulkCoding]);
+
+      const mockMcqs = [
+        { question: "Which of the following is NOT a primitive data type in Java?", options: ["int", "double", "String", "boolean"], answer: "String", module: "Java Fundamentals" },
+        { question: "What is the size of an int data type in Java?", options: ["8 bits", "16 bits", "32 bits", "64 bits"], answer: "32 bits", module: "Java Fundamentals" },
+        { question: "Which operator is used to compare two values in Java?", options: ["=", "==", "equals", "match"], answer: "==", module: "Operators" },
+        { question: "What does the 'break' statement do in a loop?", options: ["Skips one iteration", "Exits the loop", "Restarts the loop", "Throws an exception"], answer: "Exits the loop", module: "Control Flow" }
+      ];
+      setMcqQuestions([...mockMcqs, ...bulkMcq]);
+    }
+    setKeysLoading(false);
+  };
+
+  useEffect(() => {
+    if (activeTab === 'keys') {
+      loadAnswerKeys();
+    }
+  }, [activeTab, selectedAssessmentId, isOnline]);
 
   useEffect(() => {
     fetchSubmissions();
@@ -297,6 +381,140 @@ const StaffPortal = () => {
     </div>
   );
 
+  const renderAnswerKeys = () => {
+    return (
+      <div className="glass-panel" style={{ padding: '24px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
+          <div>
+            <h2 style={{ fontSize: '18px', fontWeight: 'bold' }}>Teaching Answer Key Explorer</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>Verify quiz questions and coding sandbox structures.</p>
+          </div>
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <button
+              onClick={() => setActiveKeySubTab('mcq')}
+              className={`bulk-mode-btn ${activeKeySubTab === 'mcq' ? 'active' : ''}`}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+            >
+              <HelpCircle size={14} /> MCQ Questions
+            </button>
+            <button
+              onClick={() => setActiveKeySubTab('coding')}
+              className={`bulk-mode-btn ${activeKeySubTab === 'coding' ? 'active' : ''}`}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+            >
+              <Code2 size={14} /> Coding Sandbox
+            </button>
+          </div>
+        </div>
+
+        {activeKeySubTab === 'mcq' ? (
+          <div>
+            <div style={{ marginBottom: '16px', display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Filter Assessment:</span>
+              <select 
+                className="cyber-select" 
+                value={selectedAssessmentId} 
+                onChange={(e) => setSelectedAssessmentId(e.target.value)}
+                style={{ width: '220px' }}
+              >
+                <option value="ASM001">Java Quiz (ASM001)</option>
+                <option value="ASM002">Aptitude Quiz (ASM002)</option>
+                <option value="ASM003">SQL Database Quiz (ASM003)</option>
+              </select>
+            </div>
+
+            {keysLoading ? (
+              <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>Querying MCQ Schema...</p>
+            ) : mcqQuestions.length === 0 ? (
+              <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>No MCQ questions found for this assessment.</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {mcqQuestions.map((q, idx) => (
+                  <div key={idx} style={{ padding: '16px', background: 'rgba(15,23,42,0.4)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', alignItems: 'flex-start' }}>
+                      <h4 style={{ fontWeight: 'bold', fontSize: '14px', color: '#fff' }}>Q{idx + 1}: {q.question}</h4>
+                      <span className="cyber-badge" style={{ fontSize: '10px' }}>{q.module || 'General'}</span>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '10px' }}>
+                      {q.options.map((opt, oIdx) => {
+                        const isCorrect = opt === q.answer;
+                        return (
+                          <div 
+                            key={oIdx} 
+                            style={{ 
+                              padding: '10px 12px', 
+                              borderRadius: '6px', 
+                              fontSize: '13px',
+                              background: isCorrect ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255,255,255,0.02)',
+                              border: `1px solid ${isCorrect ? '#10b981' : 'var(--border-color)'}`,
+                              color: isCorrect ? '#10b981' : 'var(--text-muted)',
+                              fontWeight: isCorrect ? 'bold' : 'normal'
+                            }}
+                          >
+                            <span style={{ marginRight: '6px' }}>{String.fromCharCode(65 + oIdx)}.</span>
+                            {opt}
+                            {isCorrect && ' ✓'}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div>
+            {keysLoading ? (
+              <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>Querying Coding Schema...</p>
+            ) : codingQuestions.length === 0 ? (
+              <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>No coding challenges found.</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {codingQuestions.map((q, idx) => (
+                  <div key={idx} style={{ padding: '16px', background: 'rgba(15,23,42,0.4)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', alignItems: 'flex-start' }}>
+                      <h4 style={{ fontWeight: 'bold', fontSize: '15px', color: '#fff' }}>{q.title}</h4>
+                      <div style={{ display: 'flex', gap: '6px' }}>
+                        <span className="cyber-badge" style={{ 
+                          borderColor: q.difficulty === 'Easy' ? '#10b981' : q.difficulty === 'Medium' ? '#f59e0b' : '#ef4444',
+                          color: q.difficulty === 'Easy' ? '#10b981' : q.difficulty === 'Medium' ? '#f59e0b' : '#ef4444',
+                          background: 'transparent'
+                        }}>
+                          {q.difficulty}
+                        </span>
+                        <span className="cyber-badge">{q.module || 'Sandbox Track'}</span>
+                      </div>
+                    </div>
+                    <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '12px', lineHeight: '1.5' }}>{q.description}</p>
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '12px', borderTop: '1px solid var(--border-color)', paddingTop: '12px' }}>
+                      <div>
+                        <strong style={{ fontSize: '12px', color: '#fff' }}>Sandbox Languages:</strong>
+                        <div style={{ display: 'flex', gap: '6px', marginTop: '4px' }}>
+                          {(Array.isArray(q.language) ? q.language : [q.language]).map((lang, lIdx) => (
+                            <span key={lIdx} className="cyber-badge" style={{ fontSize: '10px' }}>{lang}</span>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <strong style={{ fontSize: '12px', color: '#fff' }}>Sample Test Case:</strong>
+                        <div style={{ fontSize: '11px', fontFamily: 'var(--font-code)', color: 'var(--text-muted)', marginTop: '4px', background: '#010409', padding: '6px', borderRadius: '4px' }}>
+                          <div>Input: {q.testCases?.[0]?.input || 'None'}</div>
+                          <div>Output: {q.testCases?.[0]?.output || 'None'}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const renderEvaluations = () => (
     <div className="glass-panel" style={{ padding: '24px' }}>
       <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}>Submitted Academic Assessments</h2>
@@ -360,6 +578,9 @@ const StaffPortal = () => {
         <button onClick={() => setActiveTab('directory')} className="btn-cyber-outline" style={{ padding: '8px 16px', fontSize: '13px', background: activeTab === 'directory' ? 'rgba(0, 191, 255, 0.1)' : 'transparent' }}>
           Student Cohorts
         </button>
+        <button onClick={() => setActiveTab('keys')} className="btn-cyber-outline" style={{ padding: '8px 16px', fontSize: '13px', background: activeTab === 'keys' ? 'rgba(0, 191, 255, 0.1)' : 'transparent' }}>
+          Teaching Answer Key
+        </button>
         <button onClick={() => setActiveTab('addquiz')} className="btn-cyber-outline" style={{ padding: '8px 16px', fontSize: '13px', background: activeTab === 'addquiz' ? 'rgba(0, 191, 255, 0.1)' : 'transparent' }}>
           Add MCQ Question
         </button>
@@ -375,6 +596,7 @@ const StaffPortal = () => {
       </div>
 
       {activeTab === 'directory' && renderDirectory()}
+      {activeTab === 'keys' && renderAnswerKeys()}
       {activeTab === 'addquiz' && renderAddQuiz()}
       {activeTab === 'addcoding' && renderAddCoding()}
       {activeTab === 'evals' && renderEvaluations()}
