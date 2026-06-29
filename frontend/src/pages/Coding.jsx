@@ -91,6 +91,7 @@ const Coding = ({ setCurrentPage }) => {
     selectedSubModule.questions.forEach((q, idx) => {
       updatedCodes[idx] = q.templates?.[lang] || getDefaultTemplate(lang, q);
       updatedStatus[idx] = { hasRun: false, passed: 0, logs: `Language switched to ${lang.toUpperCase()}. Code sandbox reset.` };
+    });
     
     // Reset templates to selected language
     setAnswersCode({
@@ -379,13 +380,6 @@ const Coding = ({ setCurrentPage }) => {
         <div className="glass-panel" style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <div className="cyber-badge" style={{ fontSize: '10px' }}>CHALLENGES</div>
           {activeQuestions.map((q, idx) => {
-      {/* Multi-question workspace layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr', gap: '20px', flexGrow: 1, height: 'calc(100% - 75px)' }}>
-        
-        {/* Left selector sidebar */}
-        <div className="glass-panel" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <div className="cyber-badge" style={{ fontSize: '10px' }}>WEEKLY TEST SYLLABUS</div>
-          {WEEKLY_QUESTIONS.map((q, idx) => {
             const isSelected = activeQuestionIdx === idx;
             const status = testStatus[idx];
             return (
@@ -421,9 +415,6 @@ const Coding = ({ setCurrentPage }) => {
 
         {/* Right workspace: Prompt + IDE */}
         <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1.2fr', gap: '16px', height: '100%' }}>
-
-        {/* Right workspace: Split prompt & IDE */}
-        <div style={{ display: 'grid', gridTemplateColumns: '0.8fr 2fr', gap: '20px' }}>
           
           {/* Question Prompt */}
           <div className="glass-panel" style={{ padding: '18px', display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto' }}>

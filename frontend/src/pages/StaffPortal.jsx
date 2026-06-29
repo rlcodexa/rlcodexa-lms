@@ -1,10 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AssessmentContext, API_BASE_URL } from '../context/AssessmentContext';
 import BulkUpload from '../components/BulkUpload';
-import { Users, Plus, FileText, ClipboardList, Code2, CheckCircle2, Upload, BookOpen, HelpCircle } from 'lucide-react';
+import { Users, Plus, FileText, ClipboardList, Code2, CheckCircle2, Upload, BookOpen, HelpCircle, Lock, Unlock } from 'lucide-react';
 
 const StaffPortal = ({ mode }) => {
-  const { students, departments, isOnline, currentUser } = useContext(AssessmentContext);
+  const { students, departments, modules, isOnline, currentUser, fetchBackendData } = useContext(AssessmentContext);
   const [activeTab, setActiveTab] = useState(mode || 'directory');
   const [selectedDept, setSelectedDept] = useState(
     currentUser?.department || (departments[0]?.departmentName || '')
@@ -34,12 +34,6 @@ const StaffPortal = ({ mode }) => {
   const [codingQuestions, setCodingQuestions] = useState([]);
   const [keysLoading, setKeysLoading] = useState(false);
   const [activeKeySubTab, setActiveKeySubTab] = useState('mcq');
-import { Users, Plus, FileText, ClipboardList, Code2, CheckCircle2, Upload, Lock, Unlock } from 'lucide-react';
-
-const StaffPortal = () => {
-  const { students, departments, modules, isOnline, fetchBackendData } = useContext(AssessmentContext);
-  const [activeTab, setActiveTab] = useState('directory');
-  const [selectedDept, setSelectedDept] = useState(departments[0]);
 
   const handleToggleModule = async (studentId, moduleId, isCurrentlyUnlocked) => {
     const endpoint = isCurrentlyUnlocked ? 'lock' : 'unlock';
