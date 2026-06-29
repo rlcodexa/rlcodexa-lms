@@ -412,6 +412,12 @@ router.get('/results', async (req, res) => {
       });
     }
     res.json(enriched);
+  } catch (error) {
+    console.error("Error fetching results:", error);
+    res.status(500).json({ success: false, message: "Error fetching results." });
+  }
+});
+
 // @route   POST /api/trainer/questions/bulk
 router.post('/questions/bulk', async (req, res) => {
   const { assessmentId, questions, type } = req.body;
