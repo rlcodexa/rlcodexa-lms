@@ -28,6 +28,7 @@ const Sidebar = ({ currentPage, setCurrentPage }) => {
         return [
           { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
           { id: 'quizhub', label: 'Quiz', icon: HelpCircle },
+          { id: 'coding', label: 'Code Sandbox', icon: Code2 },
           { id: 'coding', label: 'Code Arena', icon: Code2, disabled: currentUser.completedCoding, badge: currentUser.completedCoding ? 'Done' : 'Active' },
           { id: 'evaluation', label: 'My Analytics', icon: Award },
           { id: 'certificate', label: 'Certificate', icon: FileCheck, disabled: !certActive, badge: certActive ? 'Ready' : 'Locked' }

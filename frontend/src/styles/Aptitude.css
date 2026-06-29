@@ -1,0 +1,128 @@
+/* Aptitude Assessment Styles */
+
+.aptitude-module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.aptitude-submodule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.aptitude-group-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.aptitude-card {
+  padding: 20px;
+  border-top-width: 3px;
+  border-top-style: solid;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.aptitude-card:hover {
+  transform: translateY(-2px);
+}
+
+.aptitude-card.completed {
+  opacity: 0.7;
+  cursor: default;
+  pointer-events: none;
+}
+
+.aptitude-card-icon {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.aptitude-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.aptitude-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.aptitude-card-subtitle {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.aptitude-card-footer {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.aptitude-progress-section {
+  margin-bottom: 20px;
+}
+
+.aptitude-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.aptitude-question-text {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.aptitude-options-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.aptitude-nav-section {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--border-color);
+  padding-top: 20px;
+}
+
+/* Score display */
+.aptitude-score-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.aptitude-score-value {
+  font-size: 42px;
+  font-weight: 800;
+  margin: 16px 0;
+}
+
+/* Submitted buttons row */
+.aptitude-submitted-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* Back button base style */
+.aptitude-back-btn {
+  padding: 8px 16px;
+  font-size: 13px;
+}

@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { AssessmentContext } from '../context/AssessmentContext';
 import { ChevronLeft, ChevronRight, Send, CheckCircle, Database, BookOpen, ArrowLeft } from 'lucide-react';
 
-const DB_MODULES = [
+export const DB_MODULES = [
   {
     id: 'sql-basics',
     title: 'SQL Basics',

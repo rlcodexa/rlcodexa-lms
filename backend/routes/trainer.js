@@ -412,8 +412,53 @@ router.get('/results', async (req, res) => {
       });
     }
     res.json(enriched);
+// @route   POST /api/trainer/questions/bulk
+router.post('/questions/bulk', async (req, res) => {
+  const { assessmentId, questions, type } = req.body;
+  try {
+    if (!questions || !Array.isArray(questions) || questions.length === 0) {
+      return res.status(400).json({ success: false, message: "No questions provided." });
+    }
+
+    const createdQuestions = [];
+    if (type === 'coding') {
+      for (const q of questions) {
+        const codingQuestionId = 'CQ' + Math.floor(100 + Math.random() * 900);
+        const codingQ = await CodingQuestion.create({
+          codingQuestionId,
+          assessmentId: assessmentId || "",
+          title: q.title,
+          description: q.description || q.desc || "",
+          difficulty: q.difficulty || "Easy",
+          language: Array.isArray(q.language) ? q.language : [q.language || "JavaScript"],
+          testCases: q.testCases || (q.inputExample ? [{ input: q.inputExample, output: q.outputExample || "" }] : []),
+          module: q.module || "Module 1",
+          moduleId: q.moduleId || ""
+        });
+        createdQuestions.push(codingQ);
+      }
+      return res.json({ success: true, count: createdQuestions.length, questions: createdQuestions });
+    } else {
+      // Default: MCQ
+      let currentCount = await QuizQuestion.countDocuments({ assessmentId });
+      for (const q of questions) {
+        currentCount++;
+        const quizQ = await QuizQuestion.create({
+          assessmentId,
+          questionNo: q.questionNo || currentCount,
+          question: q.question,
+          options: q.options,
+          answer: q.answer,
+          module: q.module || "Module 1",
+          moduleId: q.moduleId || ""
+        });
+        createdQuestions.push(quizQ);
+      }
+      return res.json({ success: true, count: createdQuestions.length, questions: createdQuestions });
+    }
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error fetching results." });
+    console.error("Bulk upload error:", error);
+    res.status(500).json({ success: false, message: "Error performing bulk upload." });
   }
 });
 
