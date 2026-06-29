@@ -21,12 +21,25 @@
   padding: 0;
 }
 
+button, a, select, .cyber-badge, .cyber-card {
+  cursor: pointer;
+}
+
 body {
   background-color: var(--bg-deep);
   color: var(--text-main);
   font-family: var(--font-cyber);
   overflow-x: hidden;
   min-height: 100vh;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+input, textarea, select {
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 /* Scrollbar styling */

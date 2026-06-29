@@ -29,6 +29,7 @@ const Sidebar = ({ currentPage, setCurrentPage }) => {
           { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
           { id: 'quizhub', label: 'Quiz', icon: HelpCircle },
           { id: 'coding', label: 'Code Sandbox', icon: Code2 },
+          { id: 'coding', label: 'Code Arena', icon: Code2, disabled: currentUser.completedCoding, badge: currentUser.completedCoding ? 'Done' : 'Active' },
           { id: 'evaluation', label: 'My Analytics', icon: Award },
           { id: 'certificate', label: 'Certificate', icon: FileCheck, disabled: !certActive, badge: certActive ? 'Ready' : 'Locked' }
         ];
@@ -139,7 +140,7 @@ const Sidebar = ({ currentPage, setCurrentPage }) => {
           boxShadow: isOnline ? '0 0 10px #10b981' : '0 0 10px #f59e0b',
           display: 'inline-block'
         }}></span>
-        {isOnline ? 'MongoDB Connected' : 'Sandbox (Offline)'}
+        {isOnline ? `${currentUser.name} - Online (Live)` : `${currentUser.name} - Offline (Local)`}
       </div>
 
       {/* Role Indicator Banner */}
@@ -223,7 +224,12 @@ const Sidebar = ({ currentPage, setCurrentPage }) => {
         flexDirection: 'column',
         gap: '15px'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          marginBottom: '15px'
+        }}>
           <div style={{
             width: '42px',
             height: '42px',
@@ -233,9 +239,18 @@ const Sidebar = ({ currentPage, setCurrentPage }) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 0 10px rgba(0, 191, 255, 0.1)'
+            boxShadow: '0 0 10px rgba(0, 191, 255, 0.1)',
+            overflow: 'hidden'
           }}>
-            <User size={20} color="var(--primary-blue)" />
+            {currentUser.role === 'student' ? (
+              <img 
+                src={`https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent((currentUser.level || 'Novice') + '-' + currentUser.name)}`}
+                alt="Avatar"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ) : (
+              <User size={20} color="var(--primary-blue)" />
+            )}
           </div>
           <div style={{ overflow: 'hidden' }}>
             <div style={{ fontSize: '14px', fontWeight: '600', color: '#fff', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>

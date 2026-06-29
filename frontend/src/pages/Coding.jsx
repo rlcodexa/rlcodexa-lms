@@ -91,6 +91,17 @@ const Coding = ({ setCurrentPage }) => {
     selectedSubModule.questions.forEach((q, idx) => {
       updatedCodes[idx] = q.templates?.[lang] || getDefaultTemplate(lang, q);
       updatedStatus[idx] = { hasRun: false, passed: 0, logs: `Language switched to ${lang.toUpperCase()}. Code sandbox reset.` };
+    
+    // Reset templates to selected language
+    setAnswersCode({
+      0: WEEKLY_QUESTIONS[0].templates[lang],
+      1: WEEKLY_QUESTIONS[1].templates[lang],
+      2: WEEKLY_QUESTIONS[2].templates[lang]
+    });
+    setTestStatus({
+      0: { hasRun: false, passed: 0, logs: `Language switched to ${lang.toUpperCase()}. Code arena reset.` },
+      1: { hasRun: false, passed: 0, logs: `Language switched to ${lang.toUpperCase()}. Code arena reset.` },
+      2: { hasRun: false, passed: 0, logs: `Language switched to ${lang.toUpperCase()}. Code arena reset.` }
     });
     setAnswersCode(updatedCodes);
     setTestStatus(updatedStatus);
@@ -368,6 +379,13 @@ const Coding = ({ setCurrentPage }) => {
         <div className="glass-panel" style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <div className="cyber-badge" style={{ fontSize: '10px' }}>CHALLENGES</div>
           {activeQuestions.map((q, idx) => {
+      {/* Multi-question workspace layout */}
+      <div style={{ display: 'grid', gridTemplateColumns: '160px 1fr', gap: '20px', flexGrow: 1, height: 'calc(100% - 75px)' }}>
+        
+        {/* Left selector sidebar */}
+        <div className="glass-panel" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div className="cyber-badge" style={{ fontSize: '10px' }}>WEEKLY TEST SYLLABUS</div>
+          {WEEKLY_QUESTIONS.map((q, idx) => {
             const isSelected = activeQuestionIdx === idx;
             const status = testStatus[idx];
             return (
@@ -404,6 +422,9 @@ const Coding = ({ setCurrentPage }) => {
         {/* Right workspace: Prompt + IDE */}
         <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1.2fr', gap: '16px', height: '100%' }}>
 
+        {/* Right workspace: Split prompt & IDE */}
+        <div style={{ display: 'grid', gridTemplateColumns: '0.8fr 2fr', gap: '20px' }}>
+          
           {/* Question Prompt */}
           <div className="glass-panel" style={{ padding: '18px', display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto' }}>
             <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: 'var(--primary-blue)', marginBottom: '10px' }}>
@@ -481,6 +502,7 @@ const Coding = ({ setCurrentPage }) => {
             <div className="console-area" style={{ height: '140px', flexShrink: 0 }}>
               <div className="console-title-bar">
                 <span>Console Output</span>
+                <span>Compiler Arena Output Logs</span>
                 {activeStatus.hasRun && (
                   <span style={{ color: activeStatus.passed === 3 ? '#10b981' : '#f59e0b', fontWeight: 'bold', fontSize: '11px' }}>
                     {activeStatus.passed}/3 Passed
